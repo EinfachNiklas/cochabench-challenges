@@ -11,6 +11,12 @@
 			"filename":"lru-cache-with-ttl.zip",
 			"language":"python",
 			"difficulty": "medium"
+		},
+		"task-scheduler":{
+			"title":"Task Scheduler",
+			"filename":"task-scheduler.zip",
+			"language":"go",
+			"difficulty": "medium"
 		}
 	}
 }
