@@ -17,6 +17,12 @@
 			"filename":"task-scheduler.zip",
 			"language":"go",
 			"difficulty": "medium"
+		},
+		"web-crawler":{
+			"title":"Web Crawler",
+			"filename":"web-crawler.zip",
+			"language":"go",
+			"difficulty": "medium"
 		}
 	}
 }
