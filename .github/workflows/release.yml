@@ -1,0 +1,91 @@
+name: Create Release with Challenges
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Release version (e.g., v1.0.0)"
+        required: true
+        type: string
+      release_name:
+        description: "Release name (optional)"
+        required: false
+        type: string
+      prerelease:
+        description: "Mark as pre-release"
+        required: false
+        type: boolean
+        default: false
+
+jobs:
+  create-release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Create release assets
+        run: |
+          set -euo pipefail
+
+          mkdir -p release-assets
+
+          count=0
+          for challenge_dir in challenges/*; do
+            if [ ! -d "$challenge_dir" ]; then
+              continue
+            fi
+
+            slug="$(basename "$challenge_dir")"
+            echo "Packaging $slug..."
+
+            (
+              cd challenges
+              zip -r "../release-assets/${slug}.zip" "$slug"
+            )
+
+            count=$((count + 1))
+          done
+
+          if [ "$count" -eq 0 ]; then
+            echo "No challenge directories found under challenges/"
+            exit 1
+          fi
+
+          cp manifest.json release-assets/manifest.json
+
+      - name: List release assets
+        run: ls -lh release-assets
+
+      - name: Generate release notes
+        id: release_notes
+        run: |
+          {
+            echo "RELEASE_BODY<<EOF"
+            echo "## Release ${{ inputs.version }}"
+            echo
+            echo "This release includes packaged challenge archives and the manifest file."
+            echo
+            echo "### Files"
+            for asset in $(find release-assets -maxdepth 1 -type f | sort); do
+              echo "- \`$(basename "$asset")\`"
+            done
+            echo "EOF"
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Create release and upload assets
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ inputs.version }}
+          name: ${{ inputs.release_name || inputs.version }}
+          body: ${{ steps.release_notes.outputs.RELEASE_BODY }}
+          draft: false
+          prerelease: ${{ inputs.prerelease }}
+          files: |
+            release-assets/*.zip
+            release-assets/manifest.json
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
