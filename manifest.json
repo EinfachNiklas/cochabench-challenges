@@ -1,0 +1,10 @@
+{
+	"challenges":{
+		"graph-pathfinding":{
+			"title":"Graph Pathfinding mit Constraints",
+			"filename":"graph-pathfinding.zip",
+			"language":"javascript",
+			"difficulty": "medium"
+		}
+	}
+}

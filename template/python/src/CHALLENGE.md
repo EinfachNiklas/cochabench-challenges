@@ -2,7 +2,7 @@
 
 ## Task
 
-Implement the required functionality in Go.
+Implement the required functionality in Python.
 
 Describe the concrete problem the participant needs to solve.
 Be explicit about:

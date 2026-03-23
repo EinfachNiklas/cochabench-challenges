@@ -1,5 +1,5 @@
 {
   "Name": "<CHALLENGE_NAME>",
   "ChallengeID": "<UNIQUE_CHALLENGE_ID>",
-  "ChallengeType": "go"
+  "ChallengeType": "javascript"
 }
