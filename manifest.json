@@ -5,6 +5,12 @@
 			"filename":"graph-pathfinding.zip",
 			"language":"javascript",
 			"difficulty": "medium"
+		},
+		"lru-cache-with-ttl":{
+			"title":"LRU Cache with TTL",
+			"filename":"lru-cache-with-ttl.zip",
+			"language":"python",
+			"difficulty": "medium"
 		}
 	}
 }
