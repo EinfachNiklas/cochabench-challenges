@@ -23,6 +23,12 @@
 			"filename":"web-crawler.zip",
 			"language":"go",
 			"difficulty": "medium"
+		},
+		"binary-protocol-parser":{
+			"title":"Binary Protocol Parser",
+			"filename":"binary-protocol-parser.zip",
+			"language":"go",
+			"difficulty": "medium"
 		}
 	}
 }
