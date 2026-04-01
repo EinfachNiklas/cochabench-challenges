@@ -1,8 +1,10 @@
-# Binary Protocol Parser
+# Binary Protocol Parser - Bug Hunt Challenge
 
 ## Task
 
-Implement a binary protocol parser in Go that can encode and decode typed data in a space-efficient binary format, similar to Protocol Buffers or MessagePack.
+**Debug and fix** a faulty binary protocol parser implementation in Go. The code is already written but contains multiple bugs that prevent it from working correctly. Your task is to find and fix all bugs to make the implementation match the protocol specification.
+
+The protocol is designed to encode and decode typed data in a space-efficient binary format, similar to Protocol Buffers or MessagePack.
 
 The protocol supports the following data types:
 - **Integers**: Int8, Int16, Int32, Int64
@@ -51,11 +53,24 @@ Body:
 0x01 0x00        // 256 in big-endian
 ```
 
-### Components to Implement
+### Bug Categories
 
-You need to implement the following files:
+1. **Endianness Bugs** - Incorrect byte order in encoding/decoding
+2. **Buffer Management** - Buffer overflows, missing bounds checks
+3. **Bit Manipulation** - Incorrect bit operations
+4. **Validation** - Missing or incorrect validation logic
+5. **Concurrency** - Race conditions in concurrent access
+6. **Integer Overflow** - Type overflow in calculations
+7. **Memory Safety** - Memory aliasing issues
+
+Your comprehensive test suite should catch all of these bugs. Run the tests to identify failures, then fix the bugs in the implementation.
+
+### Components to Debug
+
+The following files contain bugs that need to be fixed:
 
 #### `protocol.go`
+Contains encoding and decoding functions:
 - `EncodeInt8(w io.Writer, val int8) error` - Encode an 8-bit integer
 - `EncodeInt16(w io.Writer, val int16) error` - Encode a 16-bit integer
 - `EncodeInt32(w io.Writer, val int32) error` - Encode a 32-bit integer
@@ -65,6 +80,7 @@ You need to implement the following files:
 - `DecodeMessage(r io.Reader) (typeTag byte, data interface{}, error)` - Decode a complete message
 
 #### `buffer.go`
+Contains buffer operations:
 - `Buffer` type with read/write operations
 - `NewBuffer(size int) *Buffer` - Create a new buffer
 - `ReadByte() (byte, error)` - Read a single byte
@@ -76,6 +92,7 @@ You need to implement the following files:
 - `GetBit(b byte, pos uint) bool` - Get a specific bit from a byte
 
 #### `validator.go`
+Contains validation and statistics tracking:
 - `ValidateHeader(magic uint16, version, bodyLen uint8) error` - Validate header fields
 - `ValidateTypeTag(tag byte) error` - Validate type tag
 - `ComputeChecksum(data []byte) uint16` - Compute a simple checksum
@@ -83,7 +100,7 @@ You need to implement the following files:
 
 ## Context
 
-Binary protocols are fundamental to network communication, file formats, and data serialization in modern software systems. This challenge tests your understanding of:
+This challenge tests your debugging skills in the context of binary protocols and low-level data processing. You need to understand:
 
 - **Binary data encoding/decoding** - Converting Go values to/from byte representations
 - **Endianness** - Understanding byte order (big-endian vs little-endian)
@@ -92,14 +109,18 @@ Binary protocols are fundamental to network communication, file formats, and dat
 - **io.Reader and io.Writer interfaces** - Go's standard I/O abstractions
 - **Error handling** - Proper error handling in data serialization
 - **Memory management** - Avoiding memory aliasing issues with byte slices
+- **Concurrency** - Thread-safe access to shared data structures
 
-Common pitfalls in binary data processing include:
+Don't assume any particular file is bug-free - bugs are distributed across all three implementation files.
+
+Common bugs in binary data processing include:
 - Confusing big-endian and little-endian byte order
 - Off-by-one errors in buffer indexing and length calculations
 - Buffer overruns and underruns when reading/writing data
 - Integer overflow in calculations
 - Memory aliasing when slicing byte arrays
 - Incorrect bit manipulation operations
+- Race conditions in concurrent access to shared state
 
 ## Dependencies
 
@@ -110,30 +131,20 @@ Common pitfalls in binary data processing include:
   - `io` for Reader/Writer interfaces
   - `fmt` for error formatting
 
-### Running Tests
-
-```bash
-cd src
-go test ../test/... -v
-```
-
-To check for race conditions:
-```bash
-go test ../test/... -race
-```
-
 ## Constraints
 
-- Do not modify the test files
-- Use big-endian encoding for all multi-byte integers (as per the protocol specification)
-- Implement proper error handling for all operations
+- **Do not modify the test files** - they correctly test the specification
+- **Fix only the bugs** - don't refactor or add new features
+- All multi-byte integers must use **big-endian encoding** (as per specification)
+- Implement proper error handling for all edge cases
 - The `Stats` type must be safe for concurrent use
 - Do not use any external dependencies beyond the Go standard library
 - Follow Go naming conventions and idiomatic patterns
 
+
 ## Edge Cases
 
-Your implementation must correctly handle the following edge cases:
+Your bug fixes must correctly handle the following edge cases (all tested):
 
 - **Empty data**: Encoding and decoding empty strings and byte arrays
 - **Zero values**: All integer types with value 0
@@ -148,9 +159,3 @@ Your implementation must correctly handle the following edge cases:
 - **Integer overflow**: Checksum calculations that may exceed the data type range
 - **Memory aliasing**: Ensuring decoded byte slices don't share memory with internal buffers
 - **Concurrent access**: Multiple goroutines accessing `Stats` simultaneously
-
-Pay special attention to:
-- Byte order consistency between encoding and decoding
-- Correct length calculations for UTF-8 strings (byte length vs character count)
-- Proper bounds checking to prevent buffer overruns and underruns
-- Defensive copying to avoid memory aliasing issues
