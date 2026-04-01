@@ -1,75 +1,75 @@
 'use strict';
 
 /**
- * Findet den kürzesten Pfad in einem gewichteten Graphen mit Budget-Constraints.
+ * Finds the shortest path in a weighted graph with budget constraints.
  *
- * Der Graph hat Kanten mit zwei Metriken:
- * - 'distance': Die Distanz (zu minimierende Metrik)
- * - 'cost': Die Kosten (Budget-Constraint)
+ * The graph has edges with two metrics:
+ * - 'distance': The distance (metric to minimize)
+ * - 'cost': The cost (budget constraint)
  *
- * @param {Object} graph - Graph als Adjazenzliste
+ * @param {Object} graph - Graph as adjacency list
  *   Format: { nodeId: [{ to: nodeId, distance: number, cost: number }, ...], ... }
- * @param {string|number} start - Start-Knoten
- * @param {string|number} end - Ziel-Knoten
- * @param {number} maxCost - Maximales Kosten-Budget
+ * @param {string|number} start - Start node
+ * @param {string|number} end - Target node
+ * @param {number} maxCost - Maximum cost budget
  * @returns {Object|null} { path: [nodes], totalDistance: number, totalCost: number }
- *                        oder null wenn kein Pfad existiert
+ *                        or null if no path exists
  *
  * Constraints:
- * - Die Gesamtkosten dürfen maxCost nicht überschreiten
- * - Minimiere die Gesamtdistanz unter Einhaltung des Budgets
- * - Zyklen müssen vermieden werden
- * - Wenn kein Pfad existiert oder Budget nicht ausreicht: return null
+ * - Total cost must not exceed maxCost
+ * - Minimize total distance while staying within the budget
+ * - Cycles must be avoided
+ * - Return null if no path exists or budget is insufficient
  */
 function findConstrainedPath(graph, start, end, maxCost) {
-	// TODO: Implementiere den Algorithmus
+	// TODO: Implement the algorithm
 	return null;
 }
 
 /**
- * Berechnet alle möglichen Pfade zwischen zwei Knoten und gibt die
- * k kürzesten Pfade zurück, die das Budget einhalten.
+ * Computes all possible paths between two nodes and returns the
+ * k shortest paths that stay within the budget.
  *
- * @param {Object} graph - Graph als Adjazenzliste (siehe oben)
- * @param {string|number} start - Start-Knoten
- * @param {string|number} end - Ziel-Knoten
- * @param {number} maxCost - Maximales Kosten-Budget
- * @param {number} k - Anzahl der kürzesten Pfade
- * @returns {Array<Object>} Sortierte Liste der k kürzesten Pfade
+ * @param {Object} graph - Graph as adjacency list (see above)
+ * @param {string|number} start - Start node
+ * @param {string|number} end - Target node
+ * @param {number} maxCost - Maximum cost budget
+ * @param {number} k - Number of shortest paths to return
+ * @returns {Array<Object>} Sorted list of the k shortest paths
  *   Format: [{ path: [...], totalDistance: number, totalCost: number }, ...]
  */
 function findKShortestPaths(graph, start, end, maxCost, k) {
-	// TODO: Implementiere den Algorithmus (schwierig!)
+	// TODO: Implement the algorithm (challenging!)
 	return [];
 }
 
 /**
- * Prüft, ob der Graph gültig ist:
- * - Alle 'to' Knoten existieren als Keys im Graph
- * - Alle distance und cost Werte sind nicht-negative Zahlen
- * - Keine Selbst-Loops (Knoten zu sich selbst)
+ * Validates whether the graph is valid:
+ * - All 'to' nodes exist as keys in the graph
+ * - All distance and cost values are non-negative numbers
+ * - No self-loops (node pointing to itself)
  *
- * @param {Object} graph - Der zu prüfende Graph
- * @returns {boolean} true wenn gültig, false sonst
+ * @param {Object} graph - The graph to validate
+ * @returns {boolean} true if valid, false otherwise
  */
 function isValidGraph(graph) {
-	// TODO: Implementiere die Validierung
+	// TODO: Implement the validation
 	return false;
 }
 
 /**
- * Findet den kürzesten Pfad, der durch bestimmte Waypoints führt.
- * Die Waypoints müssen in der gegebenen Reihenfolge besucht werden.
+ * Finds the shortest path that passes through specific waypoints.
+ * Waypoints must be visited in the given order.
  *
- * @param {Object} graph - Graph als Adjazenzliste
- * @param {string|number} start - Start-Knoten
- * @param {Array<string|number>} waypoints - Zu besuchende Knoten in Reihenfolge
- * @param {string|number} end - Ziel-Knoten
- * @param {number} maxCost - Maximales Kosten-Budget
+ * @param {Object} graph - Graph as adjacency list
+ * @param {string|number} start - Start node
+ * @param {Array<string|number>} waypoints - Nodes to visit in order
+ * @param {string|number} end - Target node
+ * @param {number} maxCost - Maximum cost budget
  * @returns {Object|null} { path: [...], totalDistance: number, totalCost: number }
  */
 function findPathWithWaypoints(graph, start, waypoints, end, maxCost) {
-	// TODO: Implementiere den Algorithmus
+	// TODO: Implement the algorithm
 	return null;
 }
 

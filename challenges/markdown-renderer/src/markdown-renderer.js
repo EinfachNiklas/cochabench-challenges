@@ -4,13 +4,13 @@ const { parseBlocks, applyInline } = require('./renderer');
 const { createRegistry } = require('./plugin-system');
 
 /**
- * Rendert einen Markdown-String in HTML.
+ * Renders a Markdown string to HTML.
  *
- * Nutzt parseBlocks() und applyInline() aus renderer.js, um den Markdown-Text
- * in HTML umzuwandeln. Inline-Transformationen (fett, kursiv, code, links) werden
- * auf alle Block-Inhalte angewendet – ausgenommen Code-Blöcke (type: 'code').
+ * Uses parseBlocks() and applyInline() from renderer.js to convert the
+ * Markdown text to HTML. Inline transformations (bold, italic, code, links)
+ * are applied to all block content — except code blocks (type: 'code').
  *
- * Unterstützte Block-Elemente und ihre HTML-Ausgabe:
+ * Supported block elements and their HTML output:
  *   heading1     → <h1>...</h1>
  *   heading2     → <h2>...</h2>
  *   heading3     → <h3>...</h3>
@@ -21,98 +21,98 @@ const { createRegistry } = require('./plugin-system');
  *   ul           → <ul><li>...</li>...</ul>
  *   ol           → <ol><li>...</li>...</ol>
  *
- * Inline-Elemente (innerhalb von Blöcken, außer code):
+ * Inline elements (within blocks, except code):
  *   **text**       → <strong>text</strong>
  *   *text*         → <em>text</em>
  *   `code`         → <code>code</code>
  *   [text](url)    → <a href="url">text</a>
  *
- * @param {string} markdown - Der Eingabe-Markdown-String
- * @param {Object} [options={}] - Optionale Konfiguration (aktuell nicht genutzt)
- * @returns {string} Der gerenderte HTML-String
+ * @param {string} markdown - The input Markdown string
+ * @param {Object} [options={}] - Optional configuration (currently unused)
+ * @returns {string} The rendered HTML string
  */
 function renderMarkdown(markdown, options = {}) {
-  // TODO: Implementiere diese Funktion mit Hilfe von parseBlocks() und applyInline()
+  // TODO: Implement this function using parseBlocks() and applyInline()
   //
-  // Vorgehen:
-  // 1. Aufruf von parseBlocks(markdown) → Array von Block-Objekten
-  // 2. Über jeden Block iterieren und je nach Block-Typ HTML erzeugen
-  // 3. applyInline() auf den Inhalt von nicht-code Blöcken anwenden
-  //    (Code-Block-Inhalte bleiben unverändert)
-  // 4. HTML-Strings zusammenführen und zurückgeben
+  // Approach:
+  // 1. Call parseBlocks(markdown) → array of block objects
+  // 2. Iterate over each block and generate HTML based on block type
+  // 3. Apply applyInline() to the content of non-code blocks
+  //    (code block content remains unchanged)
+  // 4. Concatenate and return the HTML strings
   return '';
 }
 
 /**
- * Erstellt eine Renderer-Instanz mit Plugin-Unterstützung.
+ * Creates a renderer instance with plugin support.
  *
- * Nutzt createRegistry() aus plugin-system.js für die Plugin-Verwaltung.
+ * Uses createRegistry() from plugin-system.js for plugin management.
  *
- * Die zurückgegebene Instanz besitzt:
- *   - use(plugin): Registriert ein Plugin und gibt die Instanz zurück (chainable)
- *   - render(markdown): Rendert Markdown inklusive aller registrierten Plugins
+ * The returned instance has:
+ *   - use(plugin): Registers a plugin and returns the instance (chainable)
+ *   - render(markdown): Renders Markdown including all registered plugins
  *
- * Rendering-Ablauf in render():
- *   1. renderMarkdown(markdown) aufrufen → HTML
- *   2. registry.resolve(html) aufrufen → Plugin-Direktiven ersetzen
- *   3. Ergebnis zurückgeben
+ * Rendering flow in render():
+ *   1. Call renderMarkdown(markdown) → HTML
+ *   2. Call registry.resolve(html) → replace plugin directives
+ *   3. Return the result
  *
- * Plugin-Direktiven-Syntax (wird von registry.resolve() verarbeitet):
- *   ::pluginname[inhalt]           → handler('inhalt', [])
- *   ::pluginname[attribut][inhalt] → handler('inhalt', ['attribut'])
+ * Plugin directive syntax (processed by registry.resolve()):
+ *   ::pluginname[content]            → handler('content', [])
+ *   ::pluginname[attribute][content] → handler('content', ['attribute'])
  *
- * @param {Object} [options={}] - Optionale Konfiguration
- * @returns {{ use: Function, render: Function }} Eine Renderer-Instanz
+ * @param {Object} [options={}] - Optional configuration
+ * @returns {{ use: Function, render: Function }} A renderer instance
  */
 function createRenderer(options = {}) {
-  // TODO: createRegistry() aufrufen und die Registry in der Closure halten
+  // TODO: Call createRegistry() and keep the registry in the closure
   return {
     /**
-     * Registriert ein Plugin auf dieser Renderer-Instanz.
+     * Registers a plugin on this renderer instance.
      *
-     * @param {{ name: string, handler: Function }} plugin - Das zu registrierende Plugin
-     * @returns {{ use: Function, render: Function }} Diese Instanz (für Method Chaining)
-     * @throws {TypeError} Wenn plugin kein Objekt mit name (string) und handler (function) ist
+     * @param {{ name: string, handler: Function }} plugin - The plugin to register
+     * @returns {{ use: Function, render: Function }} This instance (for method chaining)
+     * @throws {TypeError} If plugin is not an object with name (string) and handler (function)
      */
     use(plugin) {
-      // TODO: Plugin validieren (TypeError bei fehlendem name oder handler)
-      //       und dann registry.register(plugin.name, plugin.handler) aufrufen
+      // TODO: Validate plugin (TypeError if name or handler is missing)
+      //       then call registry.register(plugin.name, plugin.handler)
       return this;
     },
 
     /**
-     * Rendert einen Markdown-String mit allen registrierten Plugins.
+     * Renders a Markdown string with all registered plugins.
      *
-     * @param {string} markdown - Der Eingabe-Markdown-String
-     * @returns {string} Der gerenderte HTML-String mit aufgelösten Plugin-Direktiven
+     * @param {string} markdown - The input Markdown string
+     * @returns {string} The rendered HTML string with resolved plugin directives
      */
     render(markdown) {
-      // TODO: renderMarkdown() aufrufen, dann registry.resolve() auf dem Ergebnis anwenden
+      // TODO: Call renderMarkdown(), then apply registry.resolve() on the result
       return '';
     }
   };
 }
 
 /**
- * Erstellt ein Plugin-Objekt für den Einsatz mit createRenderer().
+ * Creates a plugin object for use with createRenderer().
  *
- * Das Plugin-Objekt beschreibt eine Custom-Syntax-Erweiterung:
- *   ::name[inhalt]           → handler('inhalt', [])
- *   ::name[attribut][inhalt] → handler('inhalt', ['attribut'])
+ * The plugin object describes a custom syntax extension:
+ *   ::name[content]            → handler('content', [])
+ *   ::name[attribute][content] → handler('content', ['attribute'])
  *
- * Beispiel:
+ * Example:
  *   const warningPlugin = createPlugin('warning', (content) =>
  *     `<div class="warning">${content}</div>`
  *   );
  *
- * @param {string} name - Der eindeutige Plugin-Name (wird in der Direktiven-Syntax verwendet)
+ * @param {string} name - The unique plugin name (used in the directive syntax)
  * @param {Function} handler - function(content: string, attrs: string[]) -> string
- * @returns {{ name: string, handler: Function }} Das Plugin-Objekt
- * @throws {TypeError} Wenn handler keine Funktion ist
+ * @returns {{ name: string, handler: Function }} The plugin object
+ * @throws {TypeError} If handler is not a function
  */
 function createPlugin(name, handler) {
-  // TODO: Prüfen ob handler eine Funktion ist (TypeError wenn nicht)
-  //       und dann { name, handler } zurückgeben
+  // TODO: Check if handler is a function (TypeError if not)
+  //       then return { name, handler }
   return null;
 }
 

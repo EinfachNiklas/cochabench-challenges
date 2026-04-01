@@ -60,8 +60,7 @@ func TestWorkerPool_SubmitAndProcess(t *testing.T) {
 		t.Fatalf("Submit() error: %v", err)
 	}
 
-	// Warte auf Verarbeitung
-	time.Sleep(100 * time.Millisecond)
+	// Wait for processing
 
 	if atomic.LoadInt64(&processed) != 1 {
 		t.Errorf("Expected 1 processed task, got %d", atomic.LoadInt64(&processed))
@@ -163,8 +162,7 @@ func TestWorkerPool_MultipleTasks(t *testing.T) {
 		}
 	}
 
-	// Warte auf Verarbeitung
-	time.Sleep(500 * time.Millisecond)
+	// Wait for processing
 
 	count := atomic.LoadInt64(&processed)
 	if count != int64(taskCount) {

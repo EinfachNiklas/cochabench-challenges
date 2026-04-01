@@ -1,9 +1,9 @@
 'use strict';
 
 /**
- * Parst einen Markdown-String in ein Array von Block-Objekten.
+ * Parses a Markdown string into an array of block objects.
  *
- * Unterstützte Block-Typen:
+ * Supported block types:
  *   - { type: 'heading1', content: string }
  *   - { type: 'heading2', content: string }
  *   - { type: 'heading3', content: string }
@@ -14,7 +14,7 @@
  *   - { type: 'hr' }
  *   - { type: 'paragraph', content: string }
  *
- * Aufeinanderfolgende Listenzeilen desselben Typs werden zu einem Block zusammengefasst.
+ * Consecutive list lines of the same type are merged into one block.
  *
  * @param {string} markdown
  * @returns {Array<Object>}
@@ -113,13 +113,13 @@ function parseBlocks(markdown) {
 }
 
 /**
- * Wendet Inline-Transformationen auf einen String an.
+ * Applies inline transformations to a string.
  *
- * Transformationen (in dieser Reihenfolge):
- *   - Inline-Code: `code` → <code>code</code>  (unterdrückt weitere Transformationen innen)
+ * Transformations (in this order):
+ *   - Inline code: `code` → <code>code</code>  (suppresses further transformations inside)
  *   - Links: [text](url) → <a href="url">text</a>
- *   - Fett: **text** → <strong>text</strong>
- *   - Kursiv: *text* → <em>text</em>
+ *   - Bold: **text** → <strong>text</strong>
+ *   - Italic: *text* → <em>text</em>
  *
  * @param {string} text
  * @returns {string}
@@ -152,8 +152,8 @@ function applyInline(text) {
 }
 
 /**
- * Serialisiert ein Block-Array zu einem HTML-String.
- * Wendet KEINE Inline-Transformationen an — das ist Aufgabe des Integrators.
+ * Serializes a block array into an HTML string.
+ * Does NOT apply inline transformations — that is the integrator's responsibility.
  *
  * @param {Array<Object>} blocks
  * @returns {string}

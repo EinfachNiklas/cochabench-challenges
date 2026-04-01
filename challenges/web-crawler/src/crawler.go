@@ -6,151 +6,151 @@ import (
 	"time"
 )
 
-// CrawlResult repräsentiert das Ergebnis eines Crawl-Vorgangs für eine URL
+// CrawlResult represents the result of a crawl operation for a URL
 type CrawlResult struct {
-	URL          string        // Die gecrawlte URL
-	Title        string        // Seitentitel (aus <title> Tag)
-	Links        []string      // Gefundene Links (absolute URLs)
-	StatusCode   int           // HTTP Status Code
-	ResponseTime time.Duration // Antwortzeit
-	Error        error         // Fehler falls aufgetreten
-	Depth        int           // Tiefe im Crawl-Baum (Start = 0)
+	URL          string        // The crawled URL
+	Title        string        // Page title (from <title> tag)
+	Links        []string      // Discovered links (absolute URLs)
+	StatusCode   int           // HTTP status code
+	ResponseTime time.Duration // Response time
+	Error        error         // Error if one occurred
+	Depth        int           // Depth in the crawl tree (start = 0)
 }
 
-// CrawlerConfig enthält die Konfiguration für den Crawler
+// CrawlerConfig holds the configuration for the crawler
 type CrawlerConfig struct {
-	MaxDepth       int           // Maximale Crawl-Tiefe (0 = nur Start-URL)
-	MaxConcurrent  int           // Maximale Anzahl gleichzeitiger Requests
-	Timeout        time.Duration // Timeout pro Request
-	MaxPages       int           // Maximale Anzahl zu crawlender Seiten (0 = unbegrenzt)
-	RateLimitDelay time.Duration // Minimale Zeit zwischen Requests zur selben Domain
-	UserAgent      string        // User-Agent String
-	FollowExternal bool          // Externe Links folgen?
+	MaxDepth       int           // Maximum crawl depth (0 = start URL only)
+	MaxConcurrent  int           // Maximum number of concurrent requests
+	Timeout        time.Duration // Timeout per request
+	MaxPages       int           // Maximum number of pages to crawl (0 = unlimited)
+	RateLimitDelay time.Duration // Minimum time between requests to the same domain
+	UserAgent      string        // User-agent string
+	FollowExternal bool          // Follow external links?
 }
 
-// Crawler ist die Haupt-Crawler-Struktur
+// Crawler is the main crawler struct
 type Crawler struct {
 	config CrawlerConfig
-	// TODO: Füge interne Felder hinzu (z.B. visited URLs, rate limiter, etc.)
+	// TODO: Add internal fields (e.g. visited URLs, rate limiter, etc.)
 }
 
-// NewCrawler erstellt einen neuen Crawler mit der gegebenen Konfiguration
+// NewCrawler creates a new crawler with the given configuration
 //
-// Validierung:
-// - MaxDepth muss >= 0 sein
-// - MaxConcurrent muss > 0 sein
-// - Timeout muss > 0 sein
-// - MaxPages muss >= 0 sein (0 = unbegrenzt)
+// Validation:
+// - MaxDepth must be >= 0
+// - MaxConcurrent must be > 0
+// - Timeout must be > 0
+// - MaxPages must be >= 0 (0 = unlimited)
 //
 // Returns:
-//   - Initialisierter Crawler
-//   - error bei ungültiger Konfiguration
+//   - Initialized crawler
+//   - error for invalid configuration
 func NewCrawler(config CrawlerConfig) (*Crawler, error) {
-	// TODO: Implementiere Validierung und Initialisierung
+	// TODO: Implement validation and initialization
 	return nil, nil
 }
 
-// Crawl startet den Crawl-Vorgang von der gegebenen Start-URL
+// Crawl starts the crawl operation from the given start URL
 //
-// Der Crawler:
-// - Crawlt die Start-URL und folgt gefundenen Links bis MaxDepth
-// - Beachtet MaxConcurrent (Worker-Pool Pattern)
-// - Stoppt bei MaxPages erreichten Seiten
-// - Crawlt jede URL nur einmal (Duplikat-Vermeidung)
-// - Beachtet RateLimitDelay pro Domain
-// - Kann vorzeitig über Context abgebrochen werden
+// The crawler:
+// - Crawls the start URL and follows discovered links up to MaxDepth
+// - Respects MaxConcurrent (worker pool pattern)
+// - Stops when MaxPages pages have been crawled
+// - Crawls each URL only once (duplicate prevention)
+// - Respects RateLimitDelay per domain
+// - Can be cancelled early via context
 //
 // Args:
-//   - ctx: Context für Timeout/Cancellation
-//   - startURL: Die Start-URL (muss gültige HTTP(S) URL sein)
+//   - ctx: Context for timeout/cancellation
+//   - startURL: The start URL (must be a valid HTTP(S) URL)
 //
 // Returns:
-//   - Slice aller CrawlResults (inkl. Fehler)
-//   - error bei schwerwiegenden Fehlern (z.B. ungültige Start-URL)
+//   - Slice of all CrawlResults (including errors)
+//   - error for fatal errors (e.g. invalid start URL)
 func (c *Crawler) Crawl(ctx context.Context, startURL string) ([]CrawlResult, error) {
-	// TODO: Implementiere den Crawl-Algorithmus
-	// Tipps:
-	// - Verwende Goroutines für Concurrency
-	// - Channel für Work-Queue und Result-Collection
-	// - sync.WaitGroup oder Context für Koordination
-	// - Map + Mutex für visited URLs (oder sync.Map)
-	// - time.Ticker für Rate Limiting
+	// TODO: Implement the crawl algorithm
+	// Tips:
+	// - Use goroutines for concurrency
+	// - Channel for work queue and result collection
+	// - sync.WaitGroup or context for coordination
+	// - Map + mutex for visited URLs (or sync.Map)
+	// - time.Ticker for rate limiting
 	return nil, nil
 }
 
-// ExtractLinks extrahiert alle Links aus einer HTML-Seite
+// ExtractLinks extracts all links from an HTML page
 //
-// Die Funktion:
-// - Parst HTML und findet alle <a href="..."> Tags
-// - Konvertiert relative URLs zu absoluten URLs
-// - Filtert ungültige URLs (z.B. javascript:, mailto:, #anchors)
-// - Normalisiert URLs (entfernt Fragments, etc.)
+// The function:
+// - Parses HTML and finds all <a href="..."> tags
+// - Converts relative URLs to absolute URLs
+// - Filters invalid URLs (e.g. javascript:, mailto:, #anchors)
+// - Normalizes URLs (removes fragments, etc.)
 //
 // Args:
-//   - htmlContent: Der HTML-Inhalt als String
-//   - baseURL: Die Basis-URL für relative Links
+//   - htmlContent: The HTML content as a string
+//   - baseURL: The base URL for relative links
 //
 // Returns:
-//   - Slice mit absoluten URLs
-//   - error bei Parse-Fehlern
+//   - Slice of absolute URLs
+//   - error on parse failures
 func ExtractLinks(htmlContent string, baseURL *url.URL) ([]string, error) {
-	// TODO: Implementiere Link-Extraktion
-	// Tipp: Verwende golang.org/x/net/html für HTML-Parsing
+	// TODO: Implement link extraction
+	// Tip: Use golang.org/x/net/html for HTML parsing
 	return nil, nil
 }
 
-// ExtractTitle extrahiert den Titel einer HTML-Seite
+// ExtractTitle extracts the title of an HTML page
 //
 // Args:
-//   - htmlContent: Der HTML-Inhalt als String
+//   - htmlContent: The HTML content as a string
 //
 // Returns:
-//   - Der Inhalt des <title> Tags (oder "" wenn nicht gefunden)
+//   - The content of the <title> tag (or "" if not found)
 func ExtractTitle(htmlContent string) string {
-	// TODO: Implementiere Title-Extraktion
+	// TODO: Implement title extraction
 	return ""
 }
 
-// IsSameDomain prüft ob zwei URLs zur selben Domain gehören
+// IsSameDomain checks whether two URLs belong to the same domain
 //
 // Args:
-//   - url1, url2: Die zu vergleichenden URLs
+//   - url1, url2: The URLs to compare
 //
 // Returns:
-//   - true wenn beide zur selben Domain gehören
+//   - true if both belong to the same domain
 func IsSameDomain(url1, url2 string) bool {
-	// TODO: Implementiere Domain-Vergleich
+	// TODO: Implement domain comparison
 	return false
 }
 
-// NormalizeURL normalisiert eine URL
+// NormalizeURL normalizes a URL
 //
-// Normalisierung:
-// - Entfernt Fragment (#...)
-// - Entfernt trailing Slash bei Pfaden (außer Root)
-// - Konvertiert zu Lowercase (Schema und Host)
-// - Sortiert Query-Parameter
+// Normalization:
+// - Removes fragment (#...)
+// - Removes trailing slash from paths (except root)
+// - Converts to lowercase (scheme and host)
+// - Sorts query parameters
 //
 // Args:
-//   - rawURL: Die zu normalisierende URL
+//   - rawURL: The URL to normalize
 //
 // Returns:
-//   - Normalisierte URL als String
-//   - error bei ungültiger URL
+//   - Normalized URL as string
+//   - error for invalid URLs
 func NormalizeURL(rawURL string) (string, error) {
-	// TODO: Implementiere URL-Normalisierung
+	// TODO: Implement URL normalization
 	return "", nil
 }
 
-// GetDomain extrahiert die Domain aus einer URL
+// GetDomain extracts the domain from a URL
 //
 // Args:
-//   - rawURL: Die URL
+//   - rawURL: The URL
 //
 // Returns:
-//   - Domain (z.B. "example.com")
-//   - error bei ungültiger URL
+//   - Domain (e.g. "example.com")
+//   - error for invalid URLs
 func GetDomain(rawURL string) (string, error) {
-	// TODO: Implementiere Domain-Extraktion
+	// TODO: Implement domain extraction
 	return "", nil
 }

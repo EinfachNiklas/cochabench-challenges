@@ -10,11 +10,11 @@ import (
 	"time"
 )
 
-// Test Helper: Erstelle einen Test-HTTP-Server
+// Test Helper: Create a test HTTP server
 func createTestServer() *httptest.Server {
 	mux := http.NewServeMux()
 
-	// Hauptseite mit Links
+	// Main page with links
 	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "text/html")
 		w.Write([]byte(`
@@ -29,7 +29,7 @@ func createTestServer() *httptest.Server {
 		`))
 	})
 
-	// Seite 1 mit weiteren Links
+	// Page 1 with additional links
 	mux.HandleFunc("/page1", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "text/html")
 		w.Write([]byte(`
@@ -43,13 +43,13 @@ func createTestServer() *httptest.Server {
 		`))
 	})
 
-	// Seite 2
+	// Page 2
 	mux.HandleFunc("/page2", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "text/html")
 		w.Write([]byte(`<html><head><title>Page 2</title></head><body>Content</body></html>`))
 	})
 
-	// Langsame Seite (für Timeout-Tests)
+	// Slow page (for timeout tests)
 	mux.HandleFunc("/slow", func(w http.ResponseWriter, r *http.Request) {
 		time.Sleep(200 * time.Millisecond)
 		w.Write([]byte(`<html><head><title>Slow Page</title></head></html>`))
@@ -58,7 +58,7 @@ func createTestServer() *httptest.Server {
 	return httptest.NewServer(mux)
 }
 
-// TestNewCrawler_ValidConfig testet die Crawler-Erstellung mit gültiger Config
+// TestNewCrawler_ValidConfig tests crawler creation with valid config
 func TestNewCrawler_ValidConfig(t *testing.T) {
 	config := CrawlerConfig{
 		MaxDepth:      2,
@@ -77,7 +77,7 @@ func TestNewCrawler_ValidConfig(t *testing.T) {
 	}
 }
 
-// TestNewCrawler_InvalidConfig testet Validierung bei ungültiger Config
+// TestNewCrawler_InvalidConfig tests validation with invalid config
 func TestNewCrawler_InvalidConfig(t *testing.T) {
 	tests := []struct {
 		name   string
@@ -159,7 +159,7 @@ func TestCrawl_SinglePage(t *testing.T) {
 	}
 }
 
-// TestCrawl_MaxDepth testet MaxDepth Begrenzung
+// TestCrawl_MaxDepth tests MaxDepth limiting
 func TestCrawl_MaxDepth(t *testing.T) {
 	server := createTestServer()
 	defer server.Close()
@@ -179,12 +179,12 @@ func TestCrawl_MaxDepth(t *testing.T) {
 		t.Fatalf("Crawl failed: %v", err)
 	}
 
-	// Sollte Home + page1 + page2 = 3 Seiten sein (ohne external)
+	// Should be Home + page1 + page2 = 3 pages (without external)
 	if len(results) != 3 {
 		t.Errorf("Expected 3 results at depth 1, got %d", len(results))
 	}
 
-	// Prüfe dass /page1-1 nicht gecrawlt wurde (wäre Depth 2)
+	// Check that /page1-1 was not crawled (would be depth 2)
 	for _, result := range results {
 		if strings.Contains(result.URL, "page1-1") {
 			t.Error("Should not crawl to depth 2 with MaxDepth=1")
@@ -192,7 +192,7 @@ func TestCrawl_MaxDepth(t *testing.T) {
 	}
 }
 
-// TestCrawl_MaxPages testet MaxPages Limit
+// TestCrawl_MaxPages tests MaxPages limit
 func TestCrawl_MaxPages(t *testing.T) {
 	server := createTestServer()
 	defer server.Close()
@@ -217,9 +217,9 @@ func TestCrawl_MaxPages(t *testing.T) {
 	}
 }
 
-// TestCrawl_NoDuplicates testet dass URLs nicht doppelt gecrawlt werden
+// TestCrawl_NoDuplicates tests that URLs are not crawled multiple times
 func TestCrawl_NoDuplicates(t *testing.T) {
-	// Server mit zyklischen Links
+	// Server with cyclic links
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte(`
 			<html>
@@ -243,7 +243,7 @@ func TestCrawl_NoDuplicates(t *testing.T) {
 	ctx := context.Background()
 	results, _ := crawler.Crawl(ctx, server.URL)
 
-	// Zähle wie oft jede URL vorkommt
+	// Count how often each URL appears
 	urlCounts := make(map[string]int)
 	for _, result := range results {
 		urlCounts[result.URL]++
@@ -275,7 +275,7 @@ func TestCrawl_Timeout(t *testing.T) {
 		t.Fatal("Expected at least one result")
 	}
 
-	// Sollte Timeout-Error haben
+	// Should have timeout error
 	if results[0].Error == nil {
 		t.Error("Expected timeout error for slow page")
 	}
@@ -299,12 +299,12 @@ func TestCrawl_ContextCancellation(t *testing.T) {
 
 	results, err := crawler.Crawl(ctx, server.URL)
 
-	// Sollte abgebrochen werden
+	// Should be cancelled
 	if err != nil && err != context.DeadlineExceeded {
 		// OK, Context wurde abgebrochen
 	}
 
-	// Sollte nicht alle Seiten gecrawlt haben
+	// Should not have crawled all pages
 	if len(results) > 2 {
 		t.Log("Context cancellation might not be working properly")
 	}
@@ -332,12 +332,12 @@ func TestExtractLinks(t *testing.T) {
 		t.Fatalf("ExtractLinks failed: %v", err)
 	}
 
-	// Sollte /page1, page2, ../parent enthalten (nicht anchor, js, mailto)
+	// Should contain /page1, page2, ../parent (not anchor, js, mailto)
 	if len(links) < 2 {
 		t.Errorf("Expected at least 2 valid links, got %d", len(links))
 	}
 
-	// Prüfe dass keine ungültigen Links enthalten sind
+	// Check that no invalid links are included
 	for _, link := range links {
 		if strings.Contains(link, "#") {
 			t.Error("Should not include anchor links")

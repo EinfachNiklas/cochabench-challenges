@@ -279,7 +279,7 @@ func TestNewRetryHandler_SetsRetryStatus(t *testing.T) {
 
 	retryHandler(task)
 
-	// Der zweite Aufruf sollte mit StatusRetrying stattfinden
+	// The second call should occur with StatusRetrying
 	if len(statuses) < 2 {
 		t.Fatal("Expected at least 2 handler calls")
 	}

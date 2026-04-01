@@ -152,7 +152,7 @@ func TestMetricsCollector_Snapshot_ReturnsCopy(t *testing.T) {
 	snapshot1.TotalSubmitted = 999
 	snapshot1.TasksByPriority[PriorityHigh] = 999
 
-	// Neuer Snapshot sollte unverändert sein
+	// New snapshot should be unchanged
 	snapshot2 := mc.Snapshot()
 	if snapshot2.TotalSubmitted != 1 {
 		t.Errorf("Snapshot should be a copy, but was modified: TotalSubmitted = %d", snapshot2.TotalSubmitted)

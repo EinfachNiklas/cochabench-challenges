@@ -7,7 +7,7 @@ const {
 } = require('../markdown-renderer');
 
 // ---------------------------------------------------------------------------
-// Hilfs-Plugins für Tests
+// Helper plugins for tests
 // ---------------------------------------------------------------------------
 
 const warningPlugin = createPlugin('warning', (content) =>
@@ -24,99 +24,99 @@ const uppercasePlugin = createPlugin('upper', (content) =>
 );
 
 // ---------------------------------------------------------------------------
-// renderMarkdown – Überschriften
+// renderMarkdown – Headings
 // ---------------------------------------------------------------------------
 
-describe('renderMarkdown – Überschriften', () => {
-  test('rendert H1', () => {
-    expect(renderMarkdown('# Hallo')).toBe('<h1>Hallo</h1>');
+describe('renderMarkdown – Headings', () => {
+  test('renders H1', () => {
+    expect(renderMarkdown('# Hello')).toBe('<h1>Hello</h1>');
   });
 
-  test('rendert H2', () => {
-    expect(renderMarkdown('## Hallo')).toBe('<h2>Hallo</h2>');
+  test('renders H2', () => {
+    expect(renderMarkdown('## Hello')).toBe('<h2>Hello</h2>');
   });
 
-  test('rendert H3', () => {
-    expect(renderMarkdown('### Hallo')).toBe('<h3>Hallo</h3>');
+  test('renders H3', () => {
+    expect(renderMarkdown('### Hello')).toBe('<h3>Hello</h3>');
   });
 
-  test('rendert H1 mit Inline-Fett', () => {
-    expect(renderMarkdown('# Hallo **Welt**')).toBe('<h1>Hallo <strong>Welt</strong></h1>');
+  test('renders H1 with inline bold', () => {
+    expect(renderMarkdown('# Hello **World**')).toBe('<h1>Hello <strong>World</strong></h1>');
   });
 
-  test('rendert H2 mit Inline-Kursiv', () => {
-    expect(renderMarkdown('## Hallo *Welt*')).toBe('<h2>Hallo <em>Welt</em></h2>');
+  test('renders H2 with inline italic', () => {
+    expect(renderMarkdown('## Hello *World*')).toBe('<h2>Hello <em>World</em></h2>');
   });
 });
 
 // ---------------------------------------------------------------------------
-// renderMarkdown – Absätze
+// renderMarkdown – Paragraphs
 // ---------------------------------------------------------------------------
 
-describe('renderMarkdown – Absätze', () => {
-  test('rendert einfachen Absatz', () => {
-    expect(renderMarkdown('Hallo Welt')).toBe('<p>Hallo Welt</p>');
+describe('renderMarkdown – Paragraphs', () => {
+  test('renders simple paragraph', () => {
+    expect(renderMarkdown('Hello World')).toBe('<p>Hello World</p>');
   });
 
-  test('leerer String ergibt leeren String', () => {
+  test('empty string returns empty string', () => {
     expect(renderMarkdown('')).toBe('');
   });
 
-  test('nur Whitespace ergibt leeren String', () => {
+  test('whitespace only returns empty string', () => {
     expect(renderMarkdown('   ')).toBe('');
   });
 
-  test('rendert mehrere Absätze', () => {
-    const input = 'Erster Absatz\n\nZweiter Absatz';
+  test('renders multiple paragraphs', () => {
+    const input = 'First paragraph\n\nSecond paragraph';
     const output = renderMarkdown(input);
-    expect(output).toContain('<p>Erster Absatz</p>');
-    expect(output).toContain('<p>Zweiter Absatz</p>');
+    expect(output).toContain('<p>First paragraph</p>');
+    expect(output).toContain('<p>Second paragraph</p>');
   });
 });
 
 // ---------------------------------------------------------------------------
-// renderMarkdown – Inline-Elemente
+// renderMarkdown – Inline elements
 // ---------------------------------------------------------------------------
 
-describe('renderMarkdown – Inline-Elemente', () => {
-  test('rendert Fettschrift', () => {
-    expect(renderMarkdown('**fett**')).toContain('<strong>fett</strong>');
+describe('renderMarkdown – Inline elements', () => {
+  test('renders bold', () => {
+    expect(renderMarkdown('**bold**')).toContain('<strong>bold</strong>');
   });
 
-  test('rendert Kursivschrift', () => {
-    expect(renderMarkdown('*kursiv*')).toContain('<em>kursiv</em>');
+  test('renders italic', () => {
+    expect(renderMarkdown('*italic*')).toContain('<em>italic</em>');
   });
 
-  test('rendert Inline-Code', () => {
+  test('renders inline code', () => {
     expect(renderMarkdown('`code`')).toContain('<code>code</code>');
   });
 
-  test('rendert Link', () => {
-    expect(renderMarkdown('[Klick](https://example.com)')).toContain(
-      '<a href="https://example.com">Klick</a>'
+  test('renders link', () => {
+    expect(renderMarkdown('[Click](https://example.com)')).toContain(
+      '<a href="https://example.com">Click</a>'
     );
   });
 
-  test('kombinierte Inline-Elemente im Absatz', () => {
-    const output = renderMarkdown('Text mit **fett** und *kursiv* und `code`');
-    expect(output).toContain('<strong>fett</strong>');
-    expect(output).toContain('<em>kursiv</em>');
+  test('combined inline elements in paragraph', () => {
+    const output = renderMarkdown('Text with **bold** and *italic* and `code`');
+    expect(output).toContain('<strong>bold</strong>');
+    expect(output).toContain('<em>italic</em>');
     expect(output).toContain('<code>code</code>');
   });
 
-  test('Inline-Code unterdrückt Bold-Parsing', () => {
-    const output = renderMarkdown('`**kein bold**`');
-    expect(output).toContain('<code>**kein bold**</code>');
+  test('inline code suppresses bold parsing', () => {
+    const output = renderMarkdown('`**no bold**`');
+    expect(output).toContain('<code>**no bold**</code>');
     expect(output).not.toContain('<strong>');
   });
 });
 
 // ---------------------------------------------------------------------------
-// renderMarkdown – Code-Blöcke
+// renderMarkdown – Code blocks
 // ---------------------------------------------------------------------------
 
-describe('renderMarkdown – Code-Blöcke', () => {
-  test('rendert Code-Block ohne Sprache', () => {
+describe('renderMarkdown – Code blocks', () => {
+  test('renders code block without language', () => {
     const input = '```\nconsole.log("hi");\n```';
     const output = renderMarkdown(input);
     expect(output).toContain('<pre>');
@@ -124,37 +124,37 @@ describe('renderMarkdown – Code-Blöcke', () => {
     expect(output).toContain('console.log("hi");');
   });
 
-  test('rendert Code-Block mit Sprachangabe', () => {
+  test('renders code block with language specified', () => {
     const input = '```javascript\nconst x = 1;\n```';
     const output = renderMarkdown(input);
     expect(output).toContain('class="language-javascript"');
     expect(output).toContain('const x = 1;');
   });
 
-  test('kein Inline-Rendering innerhalb von Code-Blöcken', () => {
-    const input = '```\n**nicht fett**\n```';
+  test('no inline rendering inside code blocks', () => {
+    const input = '```\n**not bold**\n```';
     const output = renderMarkdown(input);
-    expect(output).toContain('**nicht fett**');
+    expect(output).toContain('**not bold**');
     expect(output).not.toContain('<strong>');
   });
 });
 
 // ---------------------------------------------------------------------------
-// renderMarkdown – Listen
+// renderMarkdown – Lists
 // ---------------------------------------------------------------------------
 
-describe('renderMarkdown – Listen', () => {
-  test('rendert ungeordnete Liste', () => {
-    const input = '- Eins\n- Zwei\n- Drei';
+describe('renderMarkdown – Lists', () => {
+  test('renders unordered list', () => {
+    const input = '- One\n- Two\n- Three';
     const output = renderMarkdown(input);
     expect(output).toContain('<ul>');
-    expect(output).toContain('<li>Eins</li>');
-    expect(output).toContain('<li>Zwei</li>');
-    expect(output).toContain('<li>Drei</li>');
+    expect(output).toContain('<li>One</li>');
+    expect(output).toContain('<li>Two</li>');
+    expect(output).toContain('<li>Three</li>');
     expect(output).toContain('</ul>');
   });
 
-  test('rendert geordnete Liste', () => {
+  test('renders ordered list', () => {
     const input = '1. Alpha\n2. Beta\n3. Gamma';
     const output = renderMarkdown(input);
     expect(output).toContain('<ol>');
@@ -164,46 +164,46 @@ describe('renderMarkdown – Listen', () => {
     expect(output).toContain('</ol>');
   });
 
-  test('zusammenhängende Listeneinträge ergeben eine einzige Liste', () => {
+  test('consecutive list items produce a single list', () => {
     const input = '- A\n- B';
     const output = renderMarkdown(input);
     const ulCount = (output.match(/<ul>/g) || []).length;
     expect(ulCount).toBe(1);
   });
 
-  test('Listeneinträge unterstützen Inline-Elemente', () => {
-    const input = '- **fett** Element';
+  test('list items support inline elements', () => {
+    const input = '- **bold** item';
     const output = renderMarkdown(input);
-    expect(output).toContain('<strong>fett</strong>');
+    expect(output).toContain('<strong>bold</strong>');
   });
 });
 
 // ---------------------------------------------------------------------------
-// renderMarkdown – Blockzitate
+// renderMarkdown – Blockquotes
 // ---------------------------------------------------------------------------
 
-describe('renderMarkdown – Blockzitate', () => {
-  test('rendert einfaches Blockzitat', () => {
-    expect(renderMarkdown('> Zitat')).toContain('<blockquote>Zitat</blockquote>');
+describe('renderMarkdown – Blockquotes', () => {
+  test('renders simple blockquote', () => {
+    expect(renderMarkdown('> Quote')).toContain('<blockquote>Quote</blockquote>');
   });
 
-  test('rendert Blockzitat mit Inline-Formatierung', () => {
-    const output = renderMarkdown('> **wichtig**');
+  test('renders blockquote with inline formatting', () => {
+    const output = renderMarkdown('> **important**');
     expect(output).toContain('<blockquote>');
-    expect(output).toContain('<strong>wichtig</strong>');
+    expect(output).toContain('<strong>important</strong>');
   });
 });
 
 // ---------------------------------------------------------------------------
-// renderMarkdown – Horizontale Linie
+// renderMarkdown – Horizontal rule
 // ---------------------------------------------------------------------------
 
-describe('renderMarkdown – Horizontale Linie', () => {
-  test('rendert horizontale Linie', () => {
+describe('renderMarkdown – Horizontal rule', () => {
+  test('renders horizontal rule', () => {
     expect(renderMarkdown('---')).toContain('<hr>');
   });
 
-  test('--- im Absatz-Kontext erzeugt keine hr', () => {
+  test('--- in paragraph context does not create hr', () => {
     const output = renderMarkdown('Text --- Text');
     expect(output).not.toContain('<hr>');
   });
@@ -214,82 +214,82 @@ describe('renderMarkdown – Horizontale Linie', () => {
 // ---------------------------------------------------------------------------
 
 describe('createPlugin', () => {
-  test('erstellt gültiges Plugin-Objekt', () => {
+  test('creates valid plugin object', () => {
     const plugin = createPlugin('test', (content) => content);
     expect(plugin).toHaveProperty('name', 'test');
     expect(plugin).toHaveProperty('handler');
     expect(typeof plugin.handler).toBe('function');
   });
 
-  test('wirft TypeError wenn handler keine Funktion ist', () => {
-    expect(() => createPlugin('test', 'kein-handler')).toThrow(TypeError);
+  test('throws TypeError when handler is not a function', () => {
+    expect(() => createPlugin('test', 'not-a-handler')).toThrow(TypeError);
   });
 
-  test('wirft TypeError wenn handler null ist', () => {
+  test('throws TypeError when handler is null', () => {
     expect(() => createPlugin('test', null)).toThrow(TypeError);
   });
 
-  test('handler wird korrekt aufgerufen', () => {
-    const plugin = createPlugin('greet', (content) => `Hallo ${content}`);
-    expect(plugin.handler('Welt', [])).toBe('Hallo Welt');
+  test('handler is called correctly', () => {
+    const plugin = createPlugin('greet', (content) => `Hello ${content}`);
+    expect(plugin.handler('World', [])).toBe('Hello World');
   });
 });
 
 // ---------------------------------------------------------------------------
-// createRenderer – Basis-Rendering
+// createRenderer – Basic rendering
 // ---------------------------------------------------------------------------
 
-describe('createRenderer – Basis-Rendering', () => {
-  test('renderer ohne Plugins verhält sich wie renderMarkdown', () => {
+describe('createRenderer – Basic rendering', () => {
+  test('renderer without plugins behaves like renderMarkdown', () => {
     const renderer = createRenderer();
-    expect(renderer.render('# Titel')).toBe(renderMarkdown('# Titel'));
+    expect(renderer.render('# Title')).toBe(renderMarkdown('# Title'));
   });
 
-  test('renderer gibt leeren String für leeren Input zurück', () => {
+  test('renderer returns empty string for empty input', () => {
     const renderer = createRenderer();
     expect(renderer.render('')).toBe('');
   });
 
-  test('renderer rendert Standard-Markdown korrekt', () => {
+  test('renderer renders standard Markdown correctly', () => {
     const renderer = createRenderer();
-    const output = renderer.render('**fett** und *kursiv*');
-    expect(output).toContain('<strong>fett</strong>');
-    expect(output).toContain('<em>kursiv</em>');
+    const output = renderer.render('**bold** and *italic*');
+    expect(output).toContain('<strong>bold</strong>');
+    expect(output).toContain('<em>italic</em>');
   });
 });
 
 // ---------------------------------------------------------------------------
-// createRenderer – Plugin-Registrierung
+// createRenderer – Plugin registration
 // ---------------------------------------------------------------------------
 
-describe('createRenderer – Plugin-Registrierung', () => {
-  test('use() gibt die Instanz zurück (chainable)', () => {
+describe('createRenderer – Plugin registration', () => {
+  test('use() returns the instance (chainable)', () => {
     const renderer = createRenderer();
     const result = renderer.use(warningPlugin);
     expect(result).toBe(renderer);
   });
 
-  test('use() mit null wirft TypeError', () => {
+  test('use() with null throws TypeError', () => {
     const renderer = createRenderer();
     expect(() => renderer.use(null)).toThrow(TypeError);
   });
 
-  test('use() mit leerem Objekt wirft TypeError', () => {
+  test('use() with empty object throws TypeError', () => {
     const renderer = createRenderer();
     expect(() => renderer.use({})).toThrow(TypeError);
   });
 
-  test('use() mit fehlendem handler wirft TypeError', () => {
+  test('use() with missing handler throws TypeError', () => {
     const renderer = createRenderer();
     expect(() => renderer.use({ name: 'x' })).toThrow(TypeError);
   });
 
-  test('use() mit fehlendem name wirft TypeError', () => {
+  test('use() with missing name throws TypeError', () => {
     const renderer = createRenderer();
     expect(() => renderer.use({ handler: () => {} })).toThrow(TypeError);
   });
 
-  test('Duplicate Plugin-Name überschreibt vorherige Registrierung', () => {
+  test('duplicate plugin name overwrites previous registration', () => {
     const renderer = createRenderer();
     const plugin1 = createPlugin('tag', () => '<span>v1</span>');
     const plugin2 = createPlugin('tag', () => '<span>v2</span>');
@@ -305,14 +305,14 @@ describe('createRenderer – Plugin-Registrierung', () => {
 // ---------------------------------------------------------------------------
 
 describe('createRenderer – warningPlugin', () => {
-  test('rendert ::warning[...] korrekt', () => {
+  test('renders ::warning[...] correctly', () => {
     const renderer = createRenderer().use(warningPlugin);
-    expect(renderer.render('::warning[Achtung!]')).toContain(
-      '<div class="warning">Achtung!</div>'
+    expect(renderer.render('::warning[Attention!]')).toContain(
+      '<div class="warning">Attention!</div>'
     );
   });
 
-  test('::warning mit leerem Inhalt', () => {
+  test('::warning with empty content', () => {
     const renderer = createRenderer().use(warningPlugin);
     expect(renderer.render('::warning[]')).toContain('<div class="warning"></div>');
   });
@@ -323,57 +323,57 @@ describe('createRenderer – warningPlugin', () => {
 // ---------------------------------------------------------------------------
 
 describe('createRenderer – badgePlugin', () => {
-  test('rendert ::badge[success][Done]', () => {
+  test('renders ::badge[success][Done]', () => {
     const renderer = createRenderer().use(badgePlugin);
     expect(renderer.render('::badge[success][Done]')).toContain(
       '<span class="badge badge-success">Done</span>'
     );
   });
 
-  test('rendert ::badge[error][Fehler]', () => {
+  test('renders ::badge[error][Failed]', () => {
     const renderer = createRenderer().use(badgePlugin);
-    expect(renderer.render('::badge[error][Fehler]')).toContain(
-      '<span class="badge badge-error">Fehler</span>'
+    expect(renderer.render('::badge[error][Failed]')).toContain(
+      '<span class="badge badge-error">Failed</span>'
     );
   });
 });
 
 // ---------------------------------------------------------------------------
-// createRenderer – unbekannte Plugin-Direktive
+// createRenderer – unknown plugin directive
 // ---------------------------------------------------------------------------
 
-describe('createRenderer – unbekannte Plugin-Direktive', () => {
-  test('unbekannte Direktive führt zu keinem Fehler', () => {
+describe('createRenderer – unknown plugin directive', () => {
+  test('unknown directive does not throw', () => {
     const renderer = createRenderer();
-    expect(() => renderer.render('::unbekannt[inhalt]')).not.toThrow();
+    expect(() => renderer.render('::unknown[content]')).not.toThrow();
   });
 });
 
 // ---------------------------------------------------------------------------
-// createRenderer – mehrere Plugins
+// createRenderer – multiple plugins
 // ---------------------------------------------------------------------------
 
-describe('createRenderer – mehrere Plugins', () => {
-  test('mehrere Plugins gleichzeitig aktiv', () => {
+describe('createRenderer – multiple plugins', () => {
+  test('multiple plugins active simultaneously', () => {
     const renderer = createRenderer()
       .use(warningPlugin)
       .use(badgePlugin);
-    const input = '::warning[Achtung]\n::badge[info][Neu]';
+    const input = '::warning[Attention]\n::badge[info][New]';
     const output = renderer.render(input);
-    expect(output).toContain('<div class="warning">Achtung</div>');
-    expect(output).toContain('<span class="badge badge-info">Neu</span>');
+    expect(output).toContain('<div class="warning">Attention</div>');
+    expect(output).toContain('<span class="badge badge-info">New</span>');
   });
 
-  test('drei Plugins in Folge registriert und aktiv', () => {
+  test('three plugins registered in sequence and all active', () => {
     const renderer = createRenderer()
       .use(warningPlugin)
       .use(badgePlugin)
       .use(uppercasePlugin);
-    const output = renderer.render('::upper[hallo]');
-    expect(output).toContain('<span class="upper">HALLO</span>');
+    const output = renderer.render('::upper[hello]');
+    expect(output).toContain('<span class="upper">HELLO</span>');
   });
 
-  test('standalone renderMarkdown löst keine Plugin-Direktiven auf', () => {
+  test('standalone renderMarkdown does not resolve plugin directives', () => {
     const output = renderMarkdown('::warning[Test]');
     expect(output).not.toContain('<div class="warning">');
   });
@@ -384,53 +384,53 @@ describe('createRenderer – mehrere Plugins', () => {
 // ---------------------------------------------------------------------------
 
 describe('Integration – Markdown + Plugins', () => {
-  test('Dokument mit Überschrift, Absatz und Plugin-Direktive', () => {
+  test('document with heading, paragraph and plugin directive', () => {
     const renderer = createRenderer().use(warningPlugin);
     const input = [
-      '# Dokumenttitel',
+      '# Document Title',
       '',
-      'Einleitung mit **fettem** Text.',
+      'Introduction with **bold** text.',
       '',
-      '::warning[Bitte lesen Sie die Hinweise.]'
+      '::warning[Please read the notes.]'
     ].join('\n');
     const output = renderer.render(input);
-    expect(output).toContain('<h1>Dokumenttitel</h1>');
-    expect(output).toContain('<strong>fettem</strong>');
-    expect(output).toContain('<div class="warning">Bitte lesen Sie die Hinweise.</div>');
+    expect(output).toContain('<h1>Document Title</h1>');
+    expect(output).toContain('<strong>bold</strong>');
+    expect(output).toContain('<div class="warning">Please read the notes.</div>');
   });
 
-  test('Plugin-Direktive neben einer Liste', () => {
+  test('plugin directive next to a list', () => {
     const renderer = createRenderer().use(badgePlugin);
-    const input = '- Eintrag A\n- Eintrag B\n\n::badge[success][Fertig]';
+    const input = '- Item A\n- Item B\n\n::badge[success][Done]';
     const output = renderer.render(input);
     expect(output).toContain('<ul>');
-    expect(output).toContain('<li>Eintrag A</li>');
-    expect(output).toContain('<span class="badge badge-success">Fertig</span>');
+    expect(output).toContain('<li>Item A</li>');
+    expect(output).toContain('<span class="badge badge-success">Done</span>');
   });
 
-  test('Code-Block schützt Plugin-Syntax vor Auflösung', () => {
+  test('code block protects plugin syntax from resolution', () => {
     const renderer = createRenderer().use(warningPlugin);
-    const input = '```\n::warning[nicht auflösen]\n```';
+    const input = '```\n::warning[do not resolve]\n```';
     const output = renderer.render(input);
-    expect(output).toContain('::warning[nicht auflösen]');
+    expect(output).toContain('::warning[do not resolve]');
     expect(output).not.toContain('<div class="warning">');
   });
 
-  test('vollständiges Dokument mit allen Block-Typen und zwei Plugins', () => {
+  test('complete document with all block types and two plugins', () => {
     const renderer = createRenderer().use(warningPlugin).use(badgePlugin);
     const input = [
-      '# Titel',
-      '## Untertitel',
+      '# Title',
+      '## Subtitle',
       '',
-      'Normaler Absatz mit **fett** und *kursiv*.',
+      'Normal paragraph with **bold** and *italic*.',
       '',
-      '- Listenpunkt 1',
-      '- Listenpunkt 2',
+      '- List item 1',
+      '- List item 2',
       '',
-      '1. Erster',
-      '2. Zweiter',
+      '1. First',
+      '2. Second',
       '',
-      '> Zitat',
+      '> Quote',
       '',
       '---',
       '',
@@ -438,20 +438,20 @@ describe('Integration – Markdown + Plugins', () => {
       'const x = 42;',
       '```',
       '',
-      '::warning[Achtung!]',
+      '::warning[Attention!]',
       '::badge[info][Status]'
     ].join('\n');
     const output = renderer.render(input);
-    expect(output).toContain('<h1>Titel</h1>');
-    expect(output).toContain('<h2>Untertitel</h2>');
-    expect(output).toContain('<strong>fett</strong>');
-    expect(output).toContain('<em>kursiv</em>');
+    expect(output).toContain('<h1>Title</h1>');
+    expect(output).toContain('<h2>Subtitle</h2>');
+    expect(output).toContain('<strong>bold</strong>');
+    expect(output).toContain('<em>italic</em>');
     expect(output).toContain('<ul>');
     expect(output).toContain('<ol>');
-    expect(output).toContain('<blockquote>Zitat</blockquote>');
+    expect(output).toContain('<blockquote>Quote</blockquote>');
     expect(output).toContain('<hr>');
     expect(output).toContain('class="language-javascript"');
-    expect(output).toContain('<div class="warning">Achtung!</div>');
+    expect(output).toContain('<div class="warning">Attention!</div>');
     expect(output).toContain('<span class="badge badge-info">Status</span>');
   });
 });

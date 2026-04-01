@@ -90,7 +90,7 @@ func TestPriorityQueue_PriorityOrder(t *testing.T) {
 func TestPriorityQueue_SamePriority_FIFO(t *testing.T) {
 	pq := NewPriorityQueue()
 
-	// Erstelle Tasks mit gleicher Priorität aber unterschiedlichen Zeitstempeln
+	// Create tasks with equal priority but different timestamps
 	task1 := &Task{ID: "first", Priority: PriorityHigh, CreatedAt: time.Now()}
 	task2 := &Task{ID: "second", Priority: PriorityHigh, CreatedAt: time.Now().Add(time.Millisecond)}
 	task3 := &Task{ID: "third", Priority: PriorityHigh, CreatedAt: time.Now().Add(2 * time.Millisecond)}
@@ -99,7 +99,7 @@ func TestPriorityQueue_SamePriority_FIFO(t *testing.T) {
 	pq.Push(task1)
 	pq.Push(task2)
 
-	// Bei gleicher Priorität soll der älteste Task zuerst kommen (FIFO)
+	// For equal priority, the oldest task should come first (FIFO)
 	result1 := pq.Pop()
 	result2 := pq.Pop()
 	result3 := pq.Pop()
@@ -122,7 +122,7 @@ func TestPriorityQueue_Peek(t *testing.T) {
 	pq.Push(&Task{ID: "low", Priority: PriorityLow, CreatedAt: now})
 	pq.Push(&Task{ID: "high", Priority: PriorityHigh, CreatedAt: now})
 
-	// Peek sollte höchste Priorität zurückgeben ohne zu entfernen
+	// Peek should return highest priority without removing
 	result := pq.Peek()
 	if result == nil {
 		t.Fatal("Peek() returned nil")
@@ -158,7 +158,7 @@ func TestPriorityQueue_Remove(t *testing.T) {
 		t.Error("Remove() should return false for non-existing task")
 	}
 
-	// Verbleibende Reihenfolge prüfen
+	// Check remaining order
 	first := pq.Pop()
 	if first.ID != "task-3" {
 		t.Errorf("Expected 'task-3', got '%s'", first.ID)
@@ -192,7 +192,7 @@ func TestPriorityQueue_Update(t *testing.T) {
 func TestPriorityQueue_ManyItems(t *testing.T) {
 	pq := NewPriorityQueue()
 
-	// Füge 100 Tasks ein
+	// Insert 100 tasks
 	for i := 0; i < 100; i++ {
 		priority := Priority(i % 4)
 		pq.Push(&Task{
@@ -206,7 +206,7 @@ func TestPriorityQueue_ManyItems(t *testing.T) {
 		t.Errorf("Expected 100 items, got %d", pq.Len())
 	}
 
-	// Pop alle und prüfe dass Prioritätsreihenfolge stimmt
+	// Pop all and verify priority order is correct
 	prevPriority := PriorityCritical
 	for pq.Len() > 0 {
 		task := pq.Pop()

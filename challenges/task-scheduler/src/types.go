@@ -4,7 +4,7 @@ import (
 	"time"
 )
 
-// Priority definiert die Prioritätsstufen für Tasks
+// Priority defines the priority levels for tasks
 type Priority int
 
 const (
@@ -14,7 +14,7 @@ const (
 	PriorityCritical Priority = 3
 )
 
-// String gibt die Priorität als lesbaren String zurück
+// String returns the priority as a human-readable string
 func (p Priority) String() string {
 	switch p {
 	case PriorityLow:
@@ -30,12 +30,12 @@ func (p Priority) String() string {
 	}
 }
 
-// IsValid prüft ob die Priorität gültig ist
+// IsValid checks whether the priority is valid
 func (p Priority) IsValid() bool {
 	return p >= PriorityLow && p <= PriorityCritical
 }
 
-// TaskStatus repräsentiert den Lebenszyklus-Status eines Tasks
+// TaskStatus represents the lifecycle status of a task
 type TaskStatus int
 
 const (
@@ -47,7 +47,7 @@ const (
 	StatusCancelled TaskStatus = 5
 )
 
-// String gibt den Status als lesbaren String zurück
+// String returns the status as a human-readable string
 func (s TaskStatus) String() string {
 	switch s {
 	case StatusPending:
@@ -67,67 +67,67 @@ func (s TaskStatus) String() string {
 	}
 }
 
-// IsTerminal gibt true zurück wenn der Status ein Endzustand ist
+// IsTerminal returns true if the status is a terminal state
 func (s TaskStatus) IsTerminal() bool {
 	return s == StatusCompleted || s == StatusFailed || s == StatusCancelled
 }
 
-// Task repräsentiert eine planbare Arbeitseinheit
+// Task represents a schedulable unit of work
 type Task struct {
-	ID           string                 // Eindeutige Task-ID
-	Name         string                 // Menschenlesbarer Name
-	Priority     Priority               // Priorität für die Ausführungsreihenfolge
-	Status       TaskStatus             // Aktueller Lebenszyklus-Status
-	Handler      string                 // Name des registrierten Handlers
-	Payload      map[string]interface{} // Beliebige Daten für den Handler
-	Dependencies []string               // Task-IDs die vorher abgeschlossen sein müssen
-	MaxRetries   int                    // Maximale Anzahl Wiederholungsversuche
-	RetryCount   int                    // Aktuelle Anzahl Wiederholungsversuche
-	CreatedAt    time.Time              // Erstellungszeitpunkt
-	StartedAt    time.Time              // Startzeitpunkt der Ausführung
-	CompletedAt  time.Time              // Abschlusszeitpunkt
-	Error        error                  // Letzter Fehler (falls aufgetreten)
-	Result       interface{}            // Ergebnis der Ausführung
+	ID           string                 // Unique task ID
+	Name         string                 // Human-readable name
+	Priority     Priority               // Priority for execution order
+	Status       TaskStatus             // Current lifecycle status
+	Handler      string                 // Name of the registered handler
+	Payload      map[string]interface{} // Arbitrary data for the handler
+	Dependencies []string               // Task IDs that must complete first
+	MaxRetries   int                    // Maximum number of retry attempts
+	RetryCount   int                    // Current number of retry attempts
+	CreatedAt    time.Time              // Creation timestamp
+	StartedAt    time.Time              // Execution start timestamp
+	CompletedAt  time.Time              // Completion timestamp
+	Error        error                  // Last error (if any)
+	Result       interface{}            // Result of the execution
 }
 
-// TaskHandler ist eine Funktion die einen Task verarbeitet
+// TaskHandler is a function that processes a task
 type TaskHandler func(task *Task) error
 
-// RetryPolicy definiert das Retry-Verhalten für fehlgeschlagene Tasks
+// RetryPolicy defines the retry behavior for failed tasks
 type RetryPolicy struct {
-	MaxRetries int           // Maximale Wiederholungsversuche
-	BaseDelay  time.Duration // Basis-Wartezeit zwischen Versuchen
-	MaxDelay   time.Duration // Maximale Wartezeit (Cap für Backoff)
-	Multiplier float64       // Multiplikator für exponentielles Backoff
+	MaxRetries int           // Maximum number of retry attempts
+	BaseDelay  time.Duration // Base wait time between attempts
+	MaxDelay   time.Duration // Maximum wait time (cap for backoff)
+	Multiplier float64       // Multiplier for exponential backoff
 }
 
-// SchedulerConfig enthält die Konfiguration für den Scheduler
+// SchedulerConfig holds the configuration for the scheduler
 type SchedulerConfig struct {
-	MaxWorkers      int           // Maximale Anzahl gleichzeitiger Worker
-	QueueSize       int           // Kapazität der Task-Queue
-	DefaultRetry    RetryPolicy   // Standard-Retry-Policy
-	ShutdownTimeout time.Duration // Timeout für graceful Shutdown
+	MaxWorkers      int           // Maximum number of concurrent workers
+	QueueSize       int           // Capacity of the task queue
+	DefaultRetry    RetryPolicy   // Default retry policy
+	ShutdownTimeout time.Duration // Timeout for graceful shutdown
 }
 
-// TaskFilter ermöglicht das Filtern von Tasks im Store
+// TaskFilter allows filtering tasks in the store
 type TaskFilter struct {
-	Status   *TaskStatus // Filter nach Status (nil = alle)
-	Priority *Priority   // Filter nach Priorität (nil = alle)
-	Handler  string      // Filter nach Handler-Name (leer = alle)
+	Status   *TaskStatus // Filter by status (nil = all)
+	Priority *Priority   // Filter by priority (nil = all)
+	Handler  string      // Filter by handler name (empty = all)
 }
 
-// TaskMetrics enthält Statistiken über Task-Ausführungen
+// TaskMetrics holds statistics about task executions
 type TaskMetrics struct {
-	TotalSubmitted  int64                // Gesamtanzahl eingereichter Tasks
-	TotalCompleted  int64                // Gesamtanzahl abgeschlossener Tasks
-	TotalFailed     int64                // Gesamtanzahl fehlgeschlagener Tasks
-	TotalRetried    int64                // Gesamtanzahl wiederholter Tasks
-	AverageExecTime time.Duration        // Durchschnittliche Ausführungszeit
-	TasksByPriority map[Priority]int64   // Anzahl Tasks pro Priorität
-	TasksByStatus   map[TaskStatus]int64 // Anzahl Tasks pro Status
+	TotalSubmitted  int64                // Total number of submitted tasks
+	TotalCompleted  int64                // Total number of completed tasks
+	TotalFailed     int64                // Total number of failed tasks
+	TotalRetried    int64                // Total number of retried tasks
+	AverageExecTime time.Duration        // Average execution time
+	TasksByPriority map[Priority]int64   // Number of tasks per priority
+	TasksByStatus   map[TaskStatus]int64 // Number of tasks per status
 }
 
-// RetryableError signalisiert einen Fehler der einen Retry auslösen soll
+// RetryableError signals an error that should trigger a retry
 type RetryableError struct {
 	Err error
 }
@@ -140,7 +140,7 @@ func (e *RetryableError) Unwrap() error {
 	return e.Err
 }
 
-// NonRetryableError signalisiert einen Fehler der KEINEN Retry auslösen soll
+// NonRetryableError signals an error that should NOT trigger a retry
 type NonRetryableError struct {
 	Err error
 }

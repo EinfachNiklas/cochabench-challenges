@@ -1,17 +1,17 @@
 'use strict';
 
 /**
- * Erstellt eine neue Plugin-Registry.
+ * Creates a new plugin registry.
  *
- * Die Registry verwaltet benannte Plugins und kann Plugin-Direktiven in einem
- * Text auflösen.
+ * The registry manages named plugins and can resolve plugin directives in a
+ * text string.
  *
- * Plugin-Direktiven-Syntax:
- *   ::pluginname[inhalt]             → handler('inhalt', [])
- *   ::pluginname[attribut][inhalt]   → handler('inhalt', ['attribut'])
+ * Plugin directive syntax:
+ *   ::pluginname[content]            → handler('content', [])
+ *   ::pluginname[attribute][content] → handler('content', ['attribute'])
  *
- * Unbekannte Direktiven (kein Plugin registriert) bleiben unverändert.
- * Duplicate-Name-Registrierung überschreibt die vorherige.
+ * Unknown directives (no plugin registered) are left unchanged.
+ * Registering a duplicate name overwrites the previous entry.
  *
  * @returns {{ register: Function, resolve: Function, list: Function }}
  */
@@ -20,8 +20,8 @@ function createRegistry() {
 
   return {
     /**
-     * Registriert ein Plugin unter dem angegebenen Namen.
-     * Ein bereits vorhandener Name wird überschrieben.
+     * Registers a plugin under the given name.
+     * An existing entry with the same name is overwritten.
      *
      * @param {string} name
      * @param {Function} handler - function(content: string, attrs: string[]) -> string
@@ -31,8 +31,8 @@ function createRegistry() {
     },
 
     /**
-     * Ersetzt alle Plugin-Direktiven im Text durch den jeweiligen Plugin-Output.
-     * Unbekannte Direktiven bleiben unverändert.
+     * Replaces all plugin directives in the text with the respective plugin output.
+     * Unknown directives are left unchanged.
      *
      * @param {string} text
      * @returns {string}
@@ -60,7 +60,7 @@ function createRegistry() {
     },
 
     /**
-     * Gibt ein Array aller registrierten Plugin-Namen zurück.
+     * Returns an array of all registered plugin names.
      *
      * @returns {string[]}
      */
