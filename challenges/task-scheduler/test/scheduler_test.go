@@ -231,7 +231,7 @@ func TestScheduler_Cancel_PendingTask(t *testing.T) {
 	ctx := context.Background()
 	scheduler.Start(ctx)
 
-	// Blockierenden Task einreichen
+	// Submit blocking task
 	scheduler.Submit(&Task{ID: "blocking-task", Handler: "blocking"})
 	time.Sleep(50 * time.Millisecond)
 
@@ -390,7 +390,7 @@ func TestScheduler_Shutdown(t *testing.T) {
 
 func TestScheduler_PriorityOrder(t *testing.T) {
 	scheduler, _ := NewScheduler(SchedulerConfig{
-		MaxWorkers:      1, // Ein Worker = sequentielle Verarbeitung
+		MaxWorkers:      1, // One worker = sequential processing
 		QueueSize:       10,
 		ShutdownTimeout: time.Second,
 	})
@@ -398,7 +398,7 @@ func TestScheduler_PriorityOrder(t *testing.T) {
 	order := make([]string, 0)
 	orderMu := sync.Mutex{}
 
-	// Blockierenden Handler um Queue aufzufüllen
+	// Blocking handler to fill the queue
 	blocker := make(chan struct{})
 	scheduler.RegisterHandler("block", func(task *Task) error {
 		<-blocker
@@ -414,11 +414,11 @@ func TestScheduler_PriorityOrder(t *testing.T) {
 	ctx := context.Background()
 	scheduler.Start(ctx)
 
-	// Blockierenden Task einreichen
+	// Submit blocking task
 	scheduler.Submit(&Task{ID: "blocker", Handler: "block"})
 	time.Sleep(50 * time.Millisecond)
 
-	// Tasks mit verschiedenen Prioritäten einreichen
+	// Submit tasks with different priorities
 	scheduler.Submit(&Task{ID: "low", Handler: "record", Priority: PriorityLow})
 	scheduler.Submit(&Task{ID: "critical", Handler: "record", Priority: PriorityCritical})
 	scheduler.Submit(&Task{ID: "medium", Handler: "record", Priority: PriorityMedium})

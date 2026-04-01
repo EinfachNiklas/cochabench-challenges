@@ -77,7 +77,7 @@ func TestIntegration_FullWorkflow(t *testing.T) {
 	// Warte auf Fertigstellung
 	time.Sleep(500 * time.Millisecond)
 
-	// Prüfe Ergebnisse
+	// Check results
 	expected := map[string]string{
 		"task-1": "HELLO",
 		"task-2": "WORLD",
@@ -100,7 +100,7 @@ func TestIntegration_FullWorkflow(t *testing.T) {
 		}
 	}
 
-	// Prüfe Metrics
+	// Check metrics
 	metrics := scheduler.Metrics()
 	if metrics.TotalSubmitted != 4 {
 		t.Errorf("Expected 4 submitted, got %d", metrics.TotalSubmitted)
@@ -114,7 +114,7 @@ func TestIntegration_FullWorkflow(t *testing.T) {
 	scheduler.Shutdown(shutdownCtx)
 }
 
-// TestIntegration_Dependencies testet Task-Abhängigkeiten
+// TestIntegration_Dependencies tests task dependencies
 func TestIntegration_Dependencies(t *testing.T) {
 	config := SchedulerConfig{
 		MaxWorkers:      2,
@@ -144,7 +144,7 @@ func TestIntegration_Dependencies(t *testing.T) {
 		Handler: "track",
 	})
 
-	// Task B: Abhängig von A
+	// Task B: depends on A
 	scheduler.Submit(&Task{
 		ID:           "task-b",
 		Handler:      "track",
@@ -247,7 +247,7 @@ func TestIntegration_RetryWithBackoff(t *testing.T) {
 	scheduler.Shutdown(shutdownCtx)
 }
 
-// TestIntegration_CircularDependency testet Erkennung zirkulärer Abhängigkeiten
+// TestIntegration_CircularDependency tests detection of circular dependencies
 func TestIntegration_CircularDependency(t *testing.T) {
 	config := SchedulerConfig{
 		MaxWorkers:      2,
@@ -261,7 +261,7 @@ func TestIntegration_CircularDependency(t *testing.T) {
 	ctx := context.Background()
 	scheduler.Start(ctx)
 
-	// Task A abhängig von Task B
+	// Task A depends on Task B
 	scheduler.Submit(&Task{ID: "task-a", Handler: "test"})
 	scheduler.Submit(&Task{
 		ID:           "task-b",
@@ -269,14 +269,14 @@ func TestIntegration_CircularDependency(t *testing.T) {
 		Dependencies: []string{"task-a"},
 	})
 
-	// Task C abhängig von B, und versuche A abhängig von C zu machen → Zyklus
+	// Task C depends on B, and try to make A depend on C → cycle
 	scheduler.Submit(&Task{
 		ID:           "task-c",
 		Handler:      "test",
 		Dependencies: []string{"task-b"},
 	})
 
-	// Dieser Submit sollte fehlschlagen (würde Zyklus erzeugen)
+	// This Submit should fail (would create a cycle)
 	err := scheduler.Submit(&Task{
 		ID:           "task-d",
 		Handler:      "test",
@@ -349,7 +349,7 @@ func TestIntegration_ManyTasks(t *testing.T) {
 	scheduler.Shutdown(shutdownCtx)
 }
 
-// TestIntegration_GracefulShutdown testet dass der Scheduler laufende Tasks abschließt
+// TestIntegration_GracefulShutdown tests that the scheduler completes running tasks
 func TestIntegration_GracefulShutdown(t *testing.T) {
 	config := SchedulerConfig{
 		MaxWorkers:      2,

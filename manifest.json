@@ -29,6 +29,12 @@
 			"filename":"binary-protocol-parser.zip",
 			"language":"go",
 			"difficulty": "medium"
+		},
+		"markdown-renderer":{
+			"title":"Markdown Renderer mit Plugin-System",
+			"filename":"markdown-renderer.zip",
+			"language":"javascript",
+			"difficulty": "medium"
 		}
 	}
 }

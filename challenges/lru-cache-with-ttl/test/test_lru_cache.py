@@ -5,34 +5,34 @@ from src.lru_cache import LRUCache
 
 
 class TestLRUCacheBasics(unittest.TestCase):
-    """Grundlegende Funktionalität des LRU Cache"""
+    """Basic functionality of the LRU Cache"""
 
     def test_init_with_valid_capacity(self):
-        """Cache wird mit gültiger Kapazität initialisiert"""
+        """Cache is initialized with valid capacity"""
         cache = LRUCache(capacity=5)
         self.assertEqual(cache.size(), 0)
 
     def test_init_with_invalid_capacity(self):
-        """Wirft ValueError bei ungültiger Kapazität"""
+        """Raises ValueError for invalid capacity"""
         with self.assertRaises(ValueError):
             LRUCache(capacity=0)
         with self.assertRaises(ValueError):
             LRUCache(capacity=-1)
 
     def test_put_and_get(self):
-        """Einfaches Speichern und Abrufen"""
+        """Simple store and retrieve"""
         cache = LRUCache(capacity=3)
         cache.put("key1", "value1")
         self.assertEqual(cache.get("key1"), "value1")
         self.assertEqual(cache.size(), 1)
 
     def test_get_nonexistent_key(self):
-        """Get gibt None zurück für nicht existierende Keys"""
+        """Get returns None for non-existent keys"""
         cache = LRUCache(capacity=3)
         self.assertIsNone(cache.get("nonexistent"))
 
     def test_overwrite_existing_key(self):
-        """Überschreiben eines existierenden Keys"""
+        """Overwriting an existing key"""
         cache = LRUCache(capacity=3)
         cache.put("key1", "value1")
         cache.put("key1", "value2")
@@ -44,12 +44,12 @@ class TestLRUEviction(unittest.TestCase):
     """LRU Eviction Policy Tests"""
 
     def test_eviction_when_full(self):
-        """Ältester Eintrag wird entfernt wenn Cache voll"""
+        """Oldest entry is removed when cache is full"""
         cache = LRUCache(capacity=3)
         cache.put("key1", "value1")
         cache.put("key2", "value2")
         cache.put("key3", "value3")
-        cache.put("key4", "value4")  # key1 sollte entfernt werden
+        cache.put("key4", "value4")  # key1 should be evicted
 
         self.assertIsNone(cache.get("key1"))
         self.assertEqual(cache.get("key2"), "value2")
@@ -58,16 +58,16 @@ class TestLRUEviction(unittest.TestCase):
         self.assertEqual(cache.size(), 3)
 
     def test_get_updates_recency(self):
-        """Get aktualisiert die Recency"""
+        """Get updates the recency"""
         cache = LRUCache(capacity=3)
         cache.put("key1", "value1")
         cache.put("key2", "value2")
         cache.put("key3", "value3")
 
-        # key1 zugreifen -> wird "recent"
+        # access key1 -> becomes "recent"
         cache.get("key1")
 
-        # key4 hinzufügen -> key2 sollte entfernt werden (nicht key1)
+        # add key4 -> key2 should be evicted (not key1)
         cache.put("key4", "value4")
 
         self.assertEqual(cache.get("key1"), "value1")
@@ -76,16 +76,16 @@ class TestLRUEviction(unittest.TestCase):
         self.assertEqual(cache.get("key4"), "value4")
 
     def test_put_updates_recency(self):
-        """Put auf existierenden Key aktualisiert Recency"""
+        """Put on existing key updates recency"""
         cache = LRUCache(capacity=3)
         cache.put("key1", "value1")
         cache.put("key2", "value2")
         cache.put("key3", "value3")
 
-        # key1 überschreiben -> wird "recent"
+        # overwrite key1 -> becomes "recent"
         cache.put("key1", "updated")
 
-        # key4 hinzufügen -> key2 sollte entfernt werden
+        # add key4 -> key2 should be evicted
         cache.put("key4", "value4")
 
         self.assertEqual(cache.get("key1"), "updated")
@@ -93,31 +93,31 @@ class TestLRUEviction(unittest.TestCase):
 
 
 class TestTTLFunctionality(unittest.TestCase):
-    """Time-to-Live Funktionalität Tests"""
+    """Time-to-Live functionality tests"""
 
     def test_entry_expires_after_ttl(self):
-        """Eintrag läuft nach TTL ab"""
+        """Entry expires after TTL"""
         cache = LRUCache(capacity=5, default_ttl=0.1)  # 100ms
         cache.put("key1", "value1")
 
-        # Sofort abrufbar
+        # retrievable immediately
         self.assertEqual(cache.get("key1"), "value1")
 
-        # Nach TTL nicht mehr abrufbar
+        # no longer retrievable after TTL
         time.sleep(0.15)
         self.assertIsNone(cache.get("key1"))
         self.assertEqual(cache.size(), 0)
 
     def test_custom_ttl_overrides_default(self):
-        """Custom TTL überschreibt default_ttl"""
+        """Custom TTL overrides default_ttl"""
         cache = LRUCache(capacity=5, default_ttl=1.0)
-        cache.put("key1", "value1", ttl=0.1)  # Kürzere TTL
+        cache.put("key1", "value1", ttl=0.1)  # Shorter TTL
 
         time.sleep(0.15)
         self.assertIsNone(cache.get("key1"))
 
     def test_no_expiry_with_none_ttl(self):
-        """Einträge ohne TTL laufen nicht ab"""
+        """Entries without TTL do not expire"""
         cache = LRUCache(capacity=5, default_ttl=None)
         cache.put("key1", "value1")
 
@@ -125,11 +125,11 @@ class TestTTLFunctionality(unittest.TestCase):
         self.assertEqual(cache.get("key1"), "value1")
 
     def test_cleanup_expired_removes_only_expired(self):
-        """cleanup_expired entfernt nur abgelaufene Einträge"""
+        """cleanup_expired removes only expired entries"""
         cache = LRUCache(capacity=5, default_ttl=0.1)
-        cache.put("key1", "value1")  # Wird ablaufen
-        cache.put("key2", "value2", ttl=None)  # Läuft nicht ab
-        cache.put("key3", "value3")  # Wird ablaufen
+        cache.put("key1", "value1")  # will expire
+        cache.put("key2", "value2", ttl=None)  # will not expire
+        cache.put("key3", "value3")  # will expire
 
         time.sleep(0.15)
         removed = cache.cleanup_expired()
@@ -140,10 +140,10 @@ class TestTTLFunctionality(unittest.TestCase):
 
 
 class TestCacheOperations(unittest.TestCase):
-    """Tests für Cache-Operationen"""
+    """Tests for cache operations"""
 
     def test_delete_existing_key(self):
-        """Löschen eines existierenden Keys"""
+        """Deleting an existing key"""
         cache = LRUCache(capacity=5)
         cache.put("key1", "value1")
         result = cache.delete("key1")
@@ -153,13 +153,13 @@ class TestCacheOperations(unittest.TestCase):
         self.assertEqual(cache.size(), 0)
 
     def test_delete_nonexistent_key(self):
-        """Löschen eines nicht existierenden Keys"""
+        """Deleting a non-existent key"""
         cache = LRUCache(capacity=5)
         result = cache.delete("nonexistent")
         self.assertFalse(result)
 
     def test_clear_removes_all(self):
-        """Clear entfernt alle Einträge"""
+        """Clear removes all entries"""
         cache = LRUCache(capacity=5)
         cache.put("key1", "value1")
         cache.put("key2", "value2")
@@ -174,10 +174,10 @@ class TestCacheOperations(unittest.TestCase):
 
 
 class TestStatistics(unittest.TestCase):
-    """Tests für Cache-Statistiken"""
+    """Tests for cache statistics"""
 
     def test_stats_tracks_hits_and_misses(self):
-        """Statistiken tracken Hits und Misses"""
+        """Statistics track hits and misses"""
         cache = LRUCache(capacity=5)
         cache.put("key1", "value1")
 
@@ -191,7 +191,7 @@ class TestStatistics(unittest.TestCase):
         self.assertEqual(stats['misses'], 2)
 
     def test_stats_tracks_evictions(self):
-        """Statistiken tracken LRU Evictions"""
+        """Statistics track LRU evictions"""
         cache = LRUCache(capacity=2)
         cache.put("key1", "value1")
         cache.put("key2", "value2")
@@ -203,24 +203,24 @@ class TestStatistics(unittest.TestCase):
         self.assertEqual(stats['capacity'], 2)
 
     def test_stats_tracks_expired_entries(self):
-        """Statistiken tracken abgelaufene Einträge"""
+        """Statistics track expired entries"""
         cache = LRUCache(capacity=5, default_ttl=0.1)
         cache.put("key1", "value1")
         cache.put("key2", "value2")
 
         time.sleep(0.15)
-        cache.get("key1")  # Triggert Expired-Check
-        cache.get("key2")  # Triggert Expired-Check
+        cache.get("key1")  # triggers expired check
+        cache.get("key2")  # triggers expired check
 
         stats = cache.get_stats()
         self.assertEqual(stats['expired'], 2)
 
 
 class TestThreadSafety(unittest.TestCase):
-    """Thread-Safety Tests"""
+    """Thread-safety tests"""
 
     def test_concurrent_puts_and_gets(self):
-        """Concurrent Puts und Gets sind thread-safe"""
+        """Concurrent puts and gets are thread-safe"""
         cache = LRUCache(capacity=100)
         errors = []
 
@@ -244,7 +244,7 @@ class TestThreadSafety(unittest.TestCase):
         self.assertEqual(len(errors), 0, f"Thread safety errors: {errors}")
 
     def test_concurrent_evictions(self):
-        """Concurrent Evictions funktionieren korrekt"""
+        """Concurrent evictions work correctly"""
         cache = LRUCache(capacity=10)
         errors = []
 
@@ -267,10 +267,10 @@ class TestThreadSafety(unittest.TestCase):
 
 
 class TestEdgeCases(unittest.TestCase):
-    """Edge Cases und Spezialfälle"""
+    """Edge cases and special scenarios"""
 
     def test_capacity_one(self):
-        """Cache mit Kapazität 1"""
+        """Cache with capacity 1"""
         cache = LRUCache(capacity=1)
         cache.put("key1", "value1")
         cache.put("key2", "value2")
@@ -280,16 +280,16 @@ class TestEdgeCases(unittest.TestCase):
         self.assertEqual(cache.size(), 1)
 
     def test_none_values(self):
-        """None als Wert speichern"""
+        """Store None as value"""
         cache = LRUCache(capacity=5)
         cache.put("key1", None)
 
-        # None-Wert sollte von "nicht gefunden" unterscheidbar sein
-        # Implementierung kann hier variieren
+        # None value should be distinguishable from "not found"
+        # implementation may vary here
         self.assertEqual(cache.size(), 1)
 
     def test_complex_objects(self):
-        """Komplexe Objekte als Values"""
+        """Complex objects as values"""
         cache = LRUCache(capacity=5)
         obj = {"nested": {"data": [1, 2, 3]}}
         cache.put("key1", obj)

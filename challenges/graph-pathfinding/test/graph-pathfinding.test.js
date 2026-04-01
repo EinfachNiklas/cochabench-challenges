@@ -5,10 +5,10 @@ const {
 	findKShortestPaths,
 	isValidGraph,
 	findPathWithWaypoints
-} = require('../src/graph-pathfinding');
+} = require('../graph-pathfinding');
 
 describe('isValidGraph', () => {
-	test('erkennt gültigen Graph', () => {
+	test('recognizes valid graph', () => {
 		const graph = {
 			'A': [{ to: 'B', distance: 5, cost: 10 }],
 			'B': [{ to: 'C', distance: 3, cost: 5 }],
@@ -17,7 +17,7 @@ describe('isValidGraph', () => {
 		expect(isValidGraph(graph)).toBe(true);
 	});
 
-	test('erkennt ungültige "to" Referenz', () => {
+	test('rejects invalid "to" reference', () => {
 		const graph = {
 			'A': [{ to: 'Z', distance: 5, cost: 10 }],
 			'B': []
@@ -25,7 +25,7 @@ describe('isValidGraph', () => {
 		expect(isValidGraph(graph)).toBe(false);
 	});
 
-	test('erkennt negative Werte', () => {
+	test('rejects negative values', () => {
 		const graph = {
 			'A': [{ to: 'B', distance: -5, cost: 10 }],
 			'B': []
@@ -33,20 +33,20 @@ describe('isValidGraph', () => {
 		expect(isValidGraph(graph)).toBe(false);
 	});
 
-	test('erkennt Selbst-Loops', () => {
+	test('rejects self-loops', () => {
 		const graph = {
 			'A': [{ to: 'A', distance: 1, cost: 1 }]
 		};
 		expect(isValidGraph(graph)).toBe(false);
 	});
 
-	test('akzeptiert leeren Graph', () => {
+	test('accepts empty graph', () => {
 		expect(isValidGraph({})).toBe(true);
 	});
 });
 
 describe('findConstrainedPath', () => {
-	test('findet einfachen direkten Pfad', () => {
+	test('finds simple direct path', () => {
 		const graph = {
 			'A': [{ to: 'B', distance: 10, cost: 5 }],
 			'B': []
@@ -59,7 +59,7 @@ describe('findConstrainedPath', () => {
 		});
 	});
 
-	test('gibt null zurück wenn Budget nicht ausreicht', () => {
+	test('returns null when budget is insufficient', () => {
 		const graph = {
 			'A': [{ to: 'B', distance: 10, cost: 100 }],
 			'B': []
@@ -68,7 +68,7 @@ describe('findConstrainedPath', () => {
 		expect(result).toBe(null);
 	});
 
-	test('findet kürzesten Pfad mit mehreren Kanten', () => {
+	test('finds shortest path with multiple edges', () => {
 		const graph = {
 			'A': [
 				{ to: 'B', distance: 10, cost: 20 },
@@ -79,14 +79,14 @@ describe('findConstrainedPath', () => {
 			'D': []
 		};
 		const result = findConstrainedPath(graph, 'A', 'D', 30);
-		// Kürzester Pfad: A->B->D (15) aber kostet 30
-		// Alternative: A->C->D (20) kostet 20
+		// Shortest path: A->B->D (15) but costs 30
+		// Alternative: A->C->D (20) costs 20
 		expect(result.path).toEqual(['A', 'B', 'D']);
 		expect(result.totalDistance).toBe(15);
 		expect(result.totalCost).toBe(30);
 	});
 
-	test('wählt kostengünstigen Pfad wenn kürzester zu teuer ist', () => {
+	test('chooses cheaper path when shortest is over budget', () => {
 		const graph = {
 			'A': [
 				{ to: 'B', distance: 5, cost: 100 },
@@ -97,14 +97,14 @@ describe('findConstrainedPath', () => {
 			'D': []
 		};
 		const result = findConstrainedPath(graph, 'A', 'D', 50);
-		// A->B->D ist kürzer (6) aber zu teuer (101)
-		// A->C->D ist länger (11) aber im Budget (6)
+		// A->B->D is shorter (6) but over budget (101)
+		// A->C->D is longer (11) but within budget (6)
 		expect(result.path).toEqual(['A', 'C', 'D']);
 		expect(result.totalDistance).toBe(11);
 		expect(result.totalCost).toBe(6);
 	});
 
-	test('gibt null zurück wenn kein Pfad existiert', () => {
+	test('returns null when no path exists', () => {
 		const graph = {
 			'A': [{ to: 'B', distance: 5, cost: 5 }],
 			'B': [],
@@ -124,7 +124,7 @@ describe('findConstrainedPath', () => {
 		});
 	});
 
-	test('funktioniert mit großem komplexen Graphen', () => {
+	test('works with large complex graph', () => {
 		const graph = {
 			'A': [{ to: 'B', distance: 4, cost: 10 }, { to: 'C', distance: 2, cost: 3 }],
 			'B': [{ to: 'D', distance: 5, cost: 4 }, { to: 'E', distance: 10, cost: 2 }],
@@ -142,7 +142,7 @@ describe('findConstrainedPath', () => {
 });
 
 describe('findKShortestPaths', () => {
-	test('findet mehrere alternative Pfade', () => {
+	test('finds multiple alternative paths', () => {
 		const graph = {
 			'A': [
 				{ to: 'B', distance: 10, cost: 5 },
@@ -159,7 +159,7 @@ describe('findKShortestPaths', () => {
 		expect(results[0].totalDistance).toBeLessThan(results[1].totalDistance);
 	});
 
-	test('gibt leeres Array wenn kein Pfad existiert', () => {
+	test('returns empty array when no path exists', () => {
 		const graph = {
 			'A': [],
 			'B': []
@@ -168,7 +168,7 @@ describe('findKShortestPaths', () => {
 		expect(results).toEqual([]);
 	});
 
-	test('gibt weniger als k Pfade zurück wenn nicht genug existieren', () => {
+	test('returns fewer than k paths when not enough exist', () => {
 		const graph = {
 			'A': [{ to: 'B', distance: 5, cost: 5 }],
 			'B': []
@@ -178,7 +178,7 @@ describe('findKShortestPaths', () => {
 		expect(results.length).toBeGreaterThan(0);
 	});
 
-	test('berücksichtigt Budget-Constraint', () => {
+	test('respects budget constraint', () => {
 		const graph = {
 			'A': [
 				{ to: 'B', distance: 5, cost: 50 },
@@ -188,11 +188,11 @@ describe('findKShortestPaths', () => {
 			'C': []
 		};
 		const results = findKShortestPaths(graph, 'A', 'B', 20, 2);
-		// A->B kostet 50, über Budget
+		// A->B costs 50, over budget
 		expect(results).toEqual([]);
 	});
 
-	test('sortiert Ergebnisse nach Distanz', () => {
+	test('sorts results by distance', () => {
 		const graph = {
 			'A': [
 				{ to: 'B', distance: 20, cost: 1 },
@@ -212,7 +212,7 @@ describe('findKShortestPaths', () => {
 });
 
 describe('findPathWithWaypoints', () => {
-	test('findet Pfad durch mehrere Waypoints', () => {
+	test('finds path through multiple waypoints', () => {
 		const graph = {
 			'A': [{ to: 'B', distance: 5, cost: 5 }],
 			'B': [{ to: 'C', distance: 5, cost: 5 }],
@@ -227,7 +227,7 @@ describe('findPathWithWaypoints', () => {
 		});
 	});
 
-	test('gibt null zurück wenn Waypoint nicht erreichbar', () => {
+	test('returns null when waypoint is unreachable', () => {
 		const graph = {
 			'A': [{ to: 'C', distance: 5, cost: 5 }],
 			'B': [],
@@ -238,7 +238,7 @@ describe('findPathWithWaypoints', () => {
 		expect(result).toBe(null);
 	});
 
-	test('berücksichtigt Budget über alle Segmente', () => {
+	test('respects budget across all segments', () => {
 		const graph = {
 			'A': [{ to: 'B', distance: 5, cost: 10 }],
 			'B': [{ to: 'C', distance: 5, cost: 10 }],
@@ -246,11 +246,11 @@ describe('findPathWithWaypoints', () => {
 			'D': []
 		};
 		const result = findPathWithWaypoints(graph, 'A', ['B', 'C'], 'D', 25);
-		// Gesamt: 30 cost, über Budget
+		// Total: 30 cost, over budget
 		expect(result).toBe(null);
 	});
 
-	test('funktioniert ohne Waypoints', () => {
+	test('works without waypoints', () => {
 		const graph = {
 			'A': [{ to: 'B', distance: 5, cost: 5 }],
 			'B': []
@@ -263,7 +263,7 @@ describe('findPathWithWaypoints', () => {
 		});
 	});
 
-	test('komplexer Graph mit Alternativrouten zwischen Waypoints', () => {
+	test('complex graph with alternative routes between waypoints', () => {
 		const graph = {
 			'A': [
 				{ to: 'B', distance: 10, cost: 2 },

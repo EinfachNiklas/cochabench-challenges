@@ -89,11 +89,11 @@ func TestTaskStore_Get_ReturnsCopy(t *testing.T) {
 	original := &Task{ID: "task-1", Name: "Original", Status: StatusPending}
 	store.Add(original)
 
-	// Hole Kopie und ändere sie
+	// Retrieve copy and modify it
 	retrieved, _ := store.Get("task-1")
 	retrieved.Name = "Modified"
 
-	// Original im Store sollte unverändert sein
+	// Original in the store should be unchanged
 	retrieved2, _ := store.Get("task-1")
 	if retrieved2.Name != "Original" {
 		t.Errorf("Store should return copies, but internal data was modified: got Name='%s'", retrieved2.Name)

@@ -1,13 +1,13 @@
 """
-LRU Cache mit Time-to-Live (TTL) Implementierung.
+LRU Cache with Time-to-Live (TTL) implementation.
 
-Implementiere eine Cache-Klasse, die folgende Features unterstützt:
-- Least Recently Used (LRU) Eviction Policy
-- Time-to-Live (TTL) für Cache-Einträge
-- Thread-Safety
-- Maximale Cache-Größe
+Implement a cache class that supports the following features:
+- Least Recently Used (LRU) eviction policy
+- Time-to-Live (TTL) for cache entries
+- Thread safety
+- Maximum cache size
 
-Die Cache-Klasse soll die folgenden Methoden implementieren:
+The cache class must implement the following methods:
 """
 
 from typing import Any, Optional
@@ -16,115 +16,114 @@ from datetime import datetime
 
 class LRUCache:
     """
-    Ein LRU-Cache mit Time-to-Live Unterstützung.
+    An LRU cache with Time-to-Live support.
 
     Attributes:
-        capacity: Maximale Anzahl der Einträge im Cache
-        default_ttl: Standard Time-to-Live in Sekunden (None = kein Ablauf)
+        capacity: Maximum number of entries in the cache
+        default_ttl: Default time-to-live in seconds (None = no expiration)
     """
 
     def __init__(self, capacity: int, default_ttl: Optional[float] = None):
         """
-        Initialisiert den LRU Cache.
+        Initializes the LRU cache.
 
         Args:
-            capacity: Maximale Anzahl der Cache-Einträge (muss > 0 sein)
-            default_ttl: Standard TTL in Sekunden (None = unbegrenzt)
+            capacity: Maximum number of cache entries (must be > 0)
+            default_ttl: Default TTL in seconds (None = unlimited)
 
         Raises:
-            ValueError: Wenn capacity <= 0
+            ValueError: If capacity <= 0
         """
-        # TODO: Implementiere die Initialisierung
+        # TODO: Implement initialization
         pass
 
     def get(self, key: str) -> Optional[Any]:
         """
-        Holt einen Wert aus dem Cache.
+        Retrieves a value from the cache.
 
         Args:
-            key: Der Schlüssel des gewünschten Eintrags
+            key: The key of the desired entry
 
         Returns:
-            Der gespeicherte Wert oder None wenn:
-            - Der Key nicht existiert
-            - Der Eintrag abgelaufen ist (TTL überschritten)
+            The stored value or None if:
+            - The key does not exist
+            - The entry has expired (TTL exceeded)
 
         Side Effects:
-            - Abgelaufene Einträge werden entfernt
-            - Bei Cache-Hit wird der Eintrag als "recently used" markiert
+            - Expired entries are removed
+            - On cache hit, the entry is marked as recently used
         """
-        # TODO: Implementiere get
+        # TODO: Implement get
         pass
 
     def put(self, key: str, value: Any, ttl: Optional[float] = None) -> None:
         """
-        Fügt einen Eintrag in den Cache ein oder aktualisiert ihn.
+        Inserts an entry into the cache or updates an existing one.
 
         Args:
-            key: Der Schlüssel
-            value: Der zu speichernde Wert
-            ttl: Time-to-Live in Sekunden (None = default_ttl verwenden)
+            key: The key
+            value: The value to store
+            ttl: Time-to-live in seconds (None = use default_ttl)
 
         Side Effects:
-            - Wenn der Cache voll ist, wird der am längsten nicht verwendete
-              Eintrag entfernt (LRU)
-            - Existierende Keys werden überschrieben und als "recently used" markiert
+            - If the cache is full, the least recently used entry is evicted (LRU)
+            - Existing keys are overwritten and marked as recently used
         """
-        # TODO: Implementiere put
+        # TODO: Implement put
         pass
 
     def delete(self, key: str) -> bool:
         """
-        Entfernt einen Eintrag aus dem Cache.
+        Removes an entry from the cache.
 
         Args:
-            key: Der zu entfernende Schlüssel
+            key: The key to remove
 
         Returns:
-            True wenn der Eintrag existierte und entfernt wurde, sonst False
+            True if the entry existed and was removed, otherwise False
         """
-        # TODO: Implementiere delete
+        # TODO: Implement delete
         pass
 
     def clear(self) -> None:
         """
-        Entfernt alle Einträge aus dem Cache.
+        Removes all entries from the cache.
         """
-        # TODO: Implementiere clear
+        # TODO: Implement clear
         pass
 
     def size(self) -> int:
         """
-        Gibt die aktuelle Anzahl der Einträge im Cache zurück.
+        Returns the current number of entries in the cache.
 
         Returns:
-            Anzahl der Einträge (ohne abgelaufene Einträge)
+            Number of entries (excluding expired entries)
         """
-        # TODO: Implementiere size
+        # TODO: Implement size
         pass
 
     def cleanup_expired(self) -> int:
         """
-        Entfernt alle abgelaufenen Einträge aus dem Cache.
+        Removes all expired entries from the cache.
 
         Returns:
-            Anzahl der entfernten Einträge
+            Number of removed entries
         """
-        # TODO: Implementiere cleanup_expired
+        # TODO: Implement cleanup_expired
         pass
 
     def get_stats(self) -> dict:
         """
-        Gibt Statistiken über den Cache zurück.
+        Returns statistics about the cache.
 
         Returns:
-            Dictionary mit folgenden Keys:
-            - 'hits': Anzahl erfolgreicher get-Aufrufe
-            - 'misses': Anzahl fehlgeschlagener get-Aufrufe
-            - 'evictions': Anzahl der LRU-Evictions
-            - 'expired': Anzahl der wegen TTL entfernten Einträge
-            - 'size': Aktuelle Anzahl der Einträge
-            - 'capacity': Maximale Kapazität
+            Dictionary with the following keys:
+            - 'hits': Number of successful get calls
+            - 'misses': Number of failed get calls
+            - 'evictions': Number of LRU evictions
+            - 'expired': Number of entries removed due to TTL
+            - 'size': Current number of entries
+            - 'capacity': Maximum capacity
         """
-        # TODO: Implementiere get_stats
+        # TODO: Implement get_stats
         pass
