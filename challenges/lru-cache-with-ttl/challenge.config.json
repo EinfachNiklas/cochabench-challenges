@@ -1,5 +1,5 @@
 {
   "Name": "LRU Cache with TTL",
-  "ChallengeID": "challenge-py-1",
+  "ChallengeID": "lru-cache-with-ttl",
   "ChallengeType": "python"
 }
